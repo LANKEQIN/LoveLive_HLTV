@@ -41,6 +41,7 @@
 - React 19 + Vite 8
 - TailwindCSS v4
 - react-router-dom v7
+- Recharts（数据可视化图表）
 
 ## 快速开始
 
@@ -62,7 +63,12 @@ npm run build
 ```
 src/
   data/
-    seiyuu.js          → 声优/角色/企划数据（μ's + Aqours 共18人）
+    seiyuu.js          → 数据统一出口（整合所有数据模块）
+    players.js         → 声优/角色数据（μ's + Aqours + 虹咲 + Liella! + 莲之空等）
+    groups.js          → 企划组合数据（7个组合）
+    lives.js           → Live/演唱会数据
+    songs.js           → 歌曲数据
+    relationships.js   → 成员关系数据（CP/小队）
   i18n/                → 国际化模块
     I18nContext.jsx    → 语言上下文与 Provider
     useI18n.js         → useI18n Hook
@@ -72,8 +78,8 @@ src/
     index.js           → 统一导出
   components/
     Layout.jsx         → 整体布局（Header + Sidebar + Footer）
-    Header.jsx         → 顶部导航栏（含语言切换器）
-    Sidebar.jsx        → 左侧边栏（企划导航 + 统计面板）
+    Header.jsx         → 顶部导航栏（含语言切换器、搜索框、移动端菜单）
+    Sidebar.jsx        → 左侧边栏（企划导航 + 统计面板 + 快捷功能）
     Footer.jsx         → 底部页脚
   pages/
     Home.jsx           → 首页（企划概览 + Top Players）
@@ -84,6 +90,9 @@ src/
     Matches.jsx        → Live 赛程列表页
     MatchDetail.jsx    → Live 详情页（歌单 / 出演成员 / 场馆）
     Rankings.jsx       → 排行榜页（人气 / CD销量 / 流媒体 / 综合战力）
+    Stats.jsx          → 统计页面（仪表盘 + 图表 + 交叉分析）
+    Search.jsx         → 全局搜索页（声优/角色/组合/Live/歌曲）
+    Compare.jsx        → 选手对比页（雷达图 + 柱状图 + 对比表格）
   App.jsx              → 路由配置
   main.jsx             → 入口文件
   index.css            → Tailwind + HLTV 深色主题
@@ -92,8 +101,15 @@ src/
 ## 当前数据范围
 
 ### 企划组合
-- **μ's**（μ's）— LoveLive! 初代组合，9名成员
+- **μ's** — LoveLive! 初代组合，9名成员
 - **Aqours** — LoveLive! Sunshine!! 主角组合，9名成员
+- **虹ヶ咲学園スクールアイドル同好会** — LoveLive! 虹ヶ咲学園スクールアイドル同好会，12名成员
+- **Liella!** — LoveLive! Superstar!! 主角组合，11名成员
+- **蓮ノ空女学院スクールアイドルクラブ** — LoveLive! 蓮ノ空女学院スクールアイドルクラブ，6名成员
+- **Sunny Passion** — LoveLive! Superstar!! 对手组合，2名成员
+- **Saint Snow** — LoveLive! Sunshine!! 对手组合，2名成员
+
+共计 **41+ 名声优/角色**，覆盖 LoveLive! 系列全部主线企划。
 
 ### 数据来源说明
 - **真实数据**: 声优姓名、生日、出身地、血型、身高、所属事务所、出道年份、角色姓名/学校/年级/代表色等
@@ -128,24 +144,32 @@ src/
   - 流媒体播放榜
   - 综合战力排名
 
-### 待完成 (Phase 3)
+### 已完成 (Phase 3)
 
-- [ ] **Stats 统计页面** (`/stats`)
-  - 全局数据统计仪表盘
-  - 企划对比图表
-  - 声优/角色维度交叉分析
-- [ ] **扩展企划数据**
-  - 虹咲学园学园偶像同好会（虹咲）
-  - Liella!
-  - 莲之空女学院学园偶像俱乐部
-  - 星咲学园 / Sayabro / Sunny Passion
-- [ ] **搜索功能**
-  - 全局搜索（声优/角色/组合/Live）
+- [x] **Stats 统计页面** (`/stats`)
+  - 全局数据统计仪表盘（总选手数、总组合数、总Live、总歌曲、总CD、总观众数、平均评分）
+  - 企划对比图表（柱状图：成员数/Live场次/歌曲数）
+  - Top Players 评分条形图
+  - 评分分布图（绿/黄/白/红四级）
+  - 年级分布饼图
+  - 跨企划六维对比雷达图
+- [x] **扩展企划数据**
+  - 虹ヶ咲学園スクールアイドル同好会（12名成员）
+  - Liella!（11名成员）
+  - 蓮ノ空女学院スクールアイドルクラブ（6名成员）
+  - Sunny Passion（2名成员）
+  - Saint Snow（2名成员）
+- [x] **全局搜索功能** (`/search`)
+  - 支持搜索声优/角色/组合/Live/歌曲
   - 搜索结果分类展示
-- [ ] **交互优化**
-  - 选手对比功能
-  - 数据可视化图表（Chart.js / Recharts）
-  - 响应式适配（移动端）
+  - URL 参数保留搜索关键词
+- [x] **选手对比功能** (`/compare`)
+  - 支持选择最多4名选手进行对比
+  - 六维能力雷达图（Lives/Songs/Solo/CDs/Events/Fans）
+  - 数据对比柱状图
+  - 详细对比表格
+- [x] **数据可视化图表**（Recharts）
+- [x] **响应式适配**（移动端菜单、自适应布局）
 
 ### 待完成 (Phase 4 · 远期)
 
