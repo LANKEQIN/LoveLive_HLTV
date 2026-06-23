@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* ===== HLTV 风格深色主题自定义 ===== */
+@theme {
+  /* 背景色系 - 模仿 HLTV 的深色背景 */
+  --color-hltv-bg: #1b1e23;
+  --color-hltv-bg-secondary: #272a30;
+  --color-hltv-bg-hover: #3a3e45;
+  --color-hltv-border: #3a3e45;
+  --color-hltv-border-light: #4a4e55;
+
+  /* 文字色系 */
+  --color-hltv-text: #cad0d6;
+  --color-hltv-text-dim: #8d9196;
+  --color-hltv-text-bright: #ffffff;
+
+  /* 强调色 - 偏向 LoveLive 的橙色/粉色系 */
+  --color-hltv-accent: #ff6b9d;
+  --color-hltv-accent-hover: #ff8db1;
+  --color-hltv-link: #5d9eff;
+  --color-hltv-link-hover: #7db5ff;
+
+  /* 企划主题色 */
+  --color-muse: #e8407a;
+  --color-aqours: #00b0f0;
+  --color-nijigasaki: #f8b500;
+  --color-liella: #ff9100;
+  --color-hasunosora: #5fb048;
+
+  /* 状态色 */
+  --color-hltv-win: #5fb048;
+  --color-hltv-lose: #e05555;
+  --color-hltv-tie: #d4a017;
+}
+
+/* 全局基础样式 */
+body {
+  margin: 0;
+  background-color: var(--color-hltv-bg);
+  color: var(--color-hltv-text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 滚动条样式 - HLTV 风格 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-hltv-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hltv-bg-hover);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-hltv-border-light);
+}
+
+/* 链接默认样式 */
+a {
+  color: var(--color-hltv-link);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--color-hltv-link-hover);
+}
+
+/* 表格行 hover 效果 - HLTV 标志性交互 */
+.hltv-row:hover {
+  background-color: var(--color-hltv-bg-hover);
+}
