@@ -79,6 +79,11 @@ src/
     Home.jsx           → 首页（企划概览 + Top Players）
     Players.jsx        → 选手列表页（表格 + 企划筛选）
     PlayerDetail.jsx   → 选手详情页（声优/角色双栏信息）
+    Teams.jsx          → 组合列表页
+    TeamDetail.jsx     → 组合详情页（成员 / 关系图 / 战绩）
+    Matches.jsx        → Live 赛程列表页
+    MatchDetail.jsx    → Live 详情页（歌单 / 出演成员 / 场馆）
+    Rankings.jsx       → 排行榜页（人气 / CD销量 / 流媒体 / 综合战力）
   App.jsx              → 路由配置
   main.jsx             → 入口文件
   index.css            → Tailwind + HLTV 深色主题
@@ -108,16 +113,16 @@ src/
 - [x] 选手详情页（声优/角色双栏信息 + 统计卡片）
 - [x] 中英双语支持（Header 语言切换、英文罗马音显示、数据字段英译）
 
-### 待完成 (Phase 2)
+### 已完成 (Phase 2)
 
-- [ ] **Teams 战队/组合主页** (`/teams/:id`)
-  - 企划组合详情页：成员列表、成立时间、代表色、总战绩
-  - 组合成员关系图（角色间的CP/小队关系）
-- [ ] **Matches 比赛/Live赛程** (`/matches`)
+- [x] **Teams 战队/组合主页** (`/teams` / `/teams/:id`)
+  - 企划组合列表与详情页：成员列表、成立时间、代表色、总战绩
+  - 组合成员关系图（角色间的 CP / 小队关系）
+- [x] **Matches 比赛/Live赛程** (`/matches` / `/matches/:id`)
   - Live 演唱会列表（日期、地点、参演组合）
-  - 赛程日历视图 + 结果视图
+  - 列表视图 + 结果视图切换
   - 单场 Live 详情页（歌单、出演成员、场馆信息）
-- [ ] **Rankings 排行榜** (`/rankings`)
+- [x] **Rankings 排行榜** (`/rankings`)
   - 人气榜（按粉丝数排名）
   - CD 销量榜
   - 流媒体播放榜

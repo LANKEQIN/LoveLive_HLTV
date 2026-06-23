@@ -679,3 +679,241 @@ export function getPlayersByGroup(groupId) {
 export function getPlayerById(id) {
   return players.find(p => p.id === id)
 }
+
+// ===== Live / 演唱会数据（模拟数据） =====
+// 对应 HLTV 的 Match 概念，记录各企划的主要演唱会
+export const lives = [
+  // μ's 主要 Live
+  {
+    id: 'muse-1st-live',
+    name: 'μ\'s First LoveLive!',
+    nameEn: "μ's First LoveLive!",
+    date: '2012-02-19',
+    venue: '横浜BLITZ',
+    venueEn: 'Yokohama BLITZ',
+    city: '横浜',
+    cityEn: 'Yokohama',
+    groupIds: ['muse'],
+    setlist: ['僕らのLIVE 君とのLIFE', '友情ノーチェンジ', 'Snow halation'],
+    attendance: 1500,
+    status: 'completed',
+  },
+  {
+    id: 'muse-2nd-live',
+    name: 'μ\'s New Year LoveLive! 2013',
+    nameEn: "μ's New Year LoveLive! 2013",
+    date: '2013-01-03',
+    venue: '東京ドームシティホール',
+    venueEn: 'Tokyo Dome City Hall',
+    city: '東京',
+    cityEn: 'Tokyo',
+    groupIds: ['muse'],
+    setlist: ['僕らは今のなかで', 'WILD STARS', 'Snow halation'],
+    attendance: 3000,
+    status: 'completed',
+  },
+  {
+    id: 'muse-3rd-live',
+    name: 'μ\'s 3rd Anniversary LoveLive!',
+    nameEn: "μ's 3rd Anniversary LoveLive!",
+    date: '2013-06-16',
+    venue: '横浜アリーナ',
+    venueEn: 'Yokohama Arena',
+    city: '横浜',
+    cityEn: 'Yokohama',
+    groupIds: ['muse'],
+    setlist: ['それは僕たちの奇跡', 'Start:DASH!!', 'KiRa-KiRa Sensation!'],
+    attendance: 12000,
+    status: 'completed',
+  },
+  {
+    id: 'muse-4th-live',
+    name: 'μ\'s →NEXT LoveLive! 2014',
+    nameEn: "μ's →NEXT LoveLive! 2014",
+    date: '2014-02-08',
+    venue: 'さいたまスーパーアリーナ',
+    venueEn: 'Saitama Super Arena',
+    city: 'さいたま',
+    cityEn: 'Saitama',
+    groupIds: ['muse'],
+    setlist: ['それは僕たちの奇跡', 'Yume no Tobira', 'Snow halation'],
+    attendance: 18000,
+    status: 'completed',
+  },
+  {
+    id: 'muse-5th-live',
+    name: 'μ\'s Go→Go! LoveLive! 2015',
+    nameEn: "μ's Go→Go! LoveLive! 2015",
+    date: '2015-01-31',
+    venue: 'さいたまスーパーアリーナ',
+    venueEn: 'Saitama Super Arena',
+    city: 'さいたま',
+    cityEn: 'Saitama',
+    groupIds: ['muse'],
+    setlist: ['Angelic Angel', 'SUNNY DAY SONG', '僕たちはひとつの光'],
+    attendance: 20000,
+    status: 'completed',
+  },
+  {
+    id: 'muse-final-live',
+    name: 'μ\'s Final LoveLive! ～μ\'sic Forever♪♪♪♪♪♪♪♪♪～',
+    nameEn: "μ's Final LoveLive! ~μ'sic Forever~",
+    date: '2016-04-01',
+    venue: '東京ドーム',
+    venueEn: 'Tokyo Dome',
+    city: '東京',
+    cityEn: 'Tokyo',
+    groupIds: ['muse'],
+    setlist: ['僕たちはひとつの光', 'Snow halation', 'Start:DASH!!', 'Oh,Love&Peace!'],
+    attendance: 55000,
+    status: 'completed',
+  },
+  // Aqours 主要 Live
+  {
+    id: 'aqours-1st-live',
+    name: 'Aqours First LoveLive! ～Step! ZERO to ONE～',
+    nameEn: 'Aqours First LoveLive! ~Step! ZERO to ONE~',
+    date: '2017-02-25',
+    venue: '横浜アリーナ',
+    venueEn: 'Yokohama Arena',
+    city: '横浜',
+    cityEn: 'Yokohama',
+    groupIds: ['aqours'],
+    setlist: ['君のこころは輝いてるかい？', 'Step! ZERO to ONE', '恋になりたいAQUARIUM'],
+    attendance: 14000,
+    status: 'completed',
+  },
+  {
+    id: 'aqours-2nd-live',
+    name: 'Aqours 2nd LoveLive! HAPPY PARTY TRAIN TOUR',
+    nameEn: 'Aqours 2nd LoveLive! HAPPY PARTY TRAIN TOUR',
+    date: '2017-08-05',
+    venue: '名古屋ドーム',
+    venueEn: 'Nagoya Dome',
+    city: '名古屋',
+    cityEn: 'Nagoya',
+    groupIds: ['aqours'],
+    setlist: ['HAPPY PARTY TRAIN', '未熟DREAMER', '青空Jumping Heart'],
+    attendance: 25000,
+    status: 'completed',
+  },
+  {
+    id: 'aqours-3rd-live',
+    name: 'Aqours 3rd LoveLive! Tour ～WONDERFUL STORIES～',
+    nameEn: 'Aqours 3rd LoveLive! Tour ~WONDERFUL STORIES~',
+    date: '2018-06-09',
+    venue: 'さいたまスーパーアリーナ',
+    venueEn: 'Saitama Super Arena',
+    city: 'さいたま',
+    cityEn: 'Saitama',
+    groupIds: ['aqours'],
+    setlist: ['WONDERFUL STORIES', '青空Jumping Heart', 'Brightest Melody'],
+    attendance: 22000,
+    status: 'completed',
+  },
+  {
+    id: 'aqours-4th-live',
+    name: 'Aqours 4th LoveLive! ～Sailing to the Sunshine～',
+    nameEn: 'Aqours 4th LoveLive! ~Sailing to the Sunshine~',
+    date: '2018-11-17',
+    venue: '東京ドーム',
+    venueEn: 'Tokyo Dome',
+    city: '東京',
+    cityEn: 'Tokyo',
+    groupIds: ['aqours'],
+    setlist: ['Sailing to the Sunshine', '青空Jumping Heart', '未来の僕らは知ってるよ'],
+    attendance: 48000,
+    status: 'completed',
+  },
+  {
+    id: 'aqours-5th-live',
+    name: 'Aqours 5th LoveLive! ～Next SPARKLING!!～',
+    nameEn: 'Aqours 5th LoveLive! ~Next SPARKLING!!~',
+    date: '2019-06-08',
+    venue: '東京ドーム',
+    venueEn: 'Tokyo Dome',
+    city: '東京',
+    cityEn: 'Tokyo',
+    groupIds: ['aqours'],
+    setlist: ['Next SPARKLING!!', 'キセキヒカル', 'Hop? Stop? Nonstop!'],
+    attendance: 50000,
+    status: 'completed',
+  },
+  {
+    id: 'aqours-6th-live',
+    name: 'Aqours 6th LoveLive! ～KU-RU-KU-RU Rock \'n\' Roll TOUR～',
+    nameEn: "Aqours 6th LoveLive! ~KU-RU-KU-RU Rock 'n' Roll TOUR~",
+    date: '2022-02-12',
+    venue: 'ベルーナドーム',
+    venueEn: 'Belluna Dome',
+    city: '所沢',
+    cityEn: 'Tokorozawa',
+    groupIds: ['aqours'],
+    setlist: ['KU-RU-KU-RU Cruller!', 'DREAMY COLOR', '未来の僕らは知ってるよ'],
+    attendance: 30000,
+    status: 'completed',
+  },
+]
+
+// ===== 组合成员关系数据（模拟数据） =====
+// 描述角色间的小队 / CP 关系，用于 Team 详情页的关系图
+export const relationships = [
+  // μ's 关系
+  { id: 'muse-core-trio', groupId: 'muse', name: '二年生トリオ', nameEn: '2nd Year Trio', members: ['穂乃果', 'ことり', '海未'], type: 'subunit' },
+  { id: 'muse-third-years', groupId: 'muse', name: '三年生組', nameEn: '3rd Year Group', members: ['絵里', 'にこ', '希'], type: 'subunit' },
+  { id: 'muse-first-years', groupId: 'muse', name: '一年生組', nameEn: '1st Year Group', members: ['真姫', '凛', '花陽'], type: 'subunit' },
+  { id: 'muse-honoka-eli', groupId: 'muse', name: '会長コンビ', nameEn: 'President Pair', members: ['穂乃果', '絵里'], type: 'cp' },
+  { id: 'muse-kotori-rin', groupId: 'muse', name: 'もふもふコンビ', nameEn: 'Fluffy Pair', members: ['ことり', '凛'], type: 'cp' },
+  { id: 'muse-umi-maki', groupId: 'muse', name: '真面目コンビ', nameEn: 'Serious Pair', members: ['海未', '真姫'], type: 'cp' },
+  // Aqours 关系
+  { id: 'aqours-core-trio', groupId: 'aqours', name: '二年生トリオ', nameEn: '2nd Year Trio', members: ['千歌', '梨子', '曜'], type: 'subunit' },
+  { id: 'aqours-third-years', groupId: 'aqours', name: '三年生組', nameEn: '3rd Year Group', members: ['果南', 'ダイヤ', '鞠莉'], type: 'subunit' },
+  { id: 'aqours-first-years', groupId: 'aqours', name: '一年生組', nameEn: '1st Year Group', members: ['善子', '花丸', 'ルビィ'], type: 'subunit' },
+  { id: 'aqours-dia-ruby', groupId: 'aqours', name: '黒澤姉妹', nameEn: 'Kurosawa Sisters', members: ['ダイヤ', 'ルビィ'], type: 'cp' },
+  { id: 'aqours-you-yoshiko', groupId: 'aqours', name: '幼馴染コンビ', nameEn: 'Childhood Friends', members: ['曜', '善子'], type: 'cp' },
+  { id: 'aqours-kanan-mari', groupId: 'aqours', name: '帰国子女コンビ', nameEn: 'Returnee Pair', members: ['果南', '鞠莉'], type: 'cp' },
+]
+
+// ===== 歌曲数据（模拟数据） =====
+// 用于 Live 详情页的歌单展示，以及排行榜的流媒体/CD数据
+export const songs = [
+  // μ's 代表曲
+  { id: 'snow-halation', title: 'Snow halation', titleEn: 'Snow halation', groupId: 'muse', streams: 128500000, sales: 156000 },
+  { id: 'start-dash', title: 'Start:DASH!!', titleEn: 'Start:DASH!!', groupId: 'muse', streams: 98500000, sales: 132000 },
+  { id: 'bokutachi-wa-hitosu-no-hikari', title: '僕たちはひとつの光', titleEn: 'Bokutachi wa Hitotsu no Hikari', groupId: 'muse', streams: 112000000, sales: 148000 },
+  { id: 'sore-wa-bokutachi-no-kiseki', title: 'それは僕たちの奇跡', titleEn: 'Sore wa Bokutachi no Kiseki', groupId: 'muse', streams: 76000000, sales: 118000 },
+  { id: 'kira-kira-sensation', title: 'KiRa-KiRa Sensation!', titleEn: 'KiRa-KiRa Sensation!', groupId: 'muse', streams: 82000000, sales: 124000 },
+  { id: 'angelic-angel', title: 'Angelic Angel', titleEn: 'Angelic Angel', groupId: 'muse', streams: 68000000, sales: 98000 },
+  // Aqours 代表曲
+  { id: 'aozora-jumping-heart', title: '青空Jumping Heart', titleEn: 'Aozora Jumping Heart', groupId: 'aqours', streams: 105000000, sales: 142000 },
+  { id: 'kimi-no-kokoro', title: '君のこころは輝いてるかい？', titleEn: 'Kimi no Kokoro wa Kagayaiteru kai?', groupId: 'aqours', streams: 92000000, sales: 128000 },
+  { id: 'mirai-no-bokura', title: '未来の僕らは知ってるよ', titleEn: 'Mirai no Bokura wa Shitteru yo', groupId: 'aqours', streams: 88000000, sales: 115000 },
+  { id: 'happy-party-train', title: 'HAPPY PARTY TRAIN', titleEn: 'HAPPY PARTY TRAIN', groupId: 'aqours', streams: 72000000, sales: 106000 },
+  { id: 'brightest-melody', title: 'Brightest Melody', titleEn: 'Brightest Melody', groupId: 'aqours', streams: 65000000, sales: 92000 },
+  { id: 'next-sparkling', title: 'Next SPARKLING!!', titleEn: 'Next SPARKLING!!', groupId: 'aqours', streams: 58000000, sales: 88000 },
+]
+
+// 辅助函数：获取指定企划的 Live 列表
+export function getLivesByGroup(groupId) {
+  return lives.filter(l => l.groupIds.includes(groupId))
+}
+
+// 辅助函数：根据 id 获取 Live
+export function getLiveById(id) {
+  return lives.find(l => l.id === id)
+}
+
+// 辅助函数：获取指定企划的关系数据
+export function getRelationshipsByGroup(groupId) {
+  return relationships.filter(r => r.groupId === groupId)
+}
+
+// 辅助函数：根据角色名获取选手（用于关系图）
+export function getPlayerByCharacterName(characterName) {
+  return players.find(p => p.characterName === characterName)
+}
+
+// 辅助函数：获取指定企划的歌曲
+export function getSongsByGroup(groupId) {
+  return songs.filter(s => s.groupId === groupId)
+}
