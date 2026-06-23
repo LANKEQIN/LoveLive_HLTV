@@ -21,7 +21,9 @@ export const groups = [
     disbanded: 2016,
     color: '#e8407a',
     colorName: '粉色',
+    colorNameEn: 'Pink',
     description: 'LoveLive! 学园偶像计划的第一代组合，音乃木坂学院的9名学园偶像。2010年结成，2016年Final Live后活动休止。',
+    descriptionEn: "LoveLive!'s first generation school idol group, 9 idols from Otonokizaka High School. Formed in 2010, activities paused after the 2016 Final Live.",
     totalLives: 12,
     totalSongs: 96,
     totalCDs: 28,
@@ -35,7 +37,9 @@ export const groups = [
     disbanded: null,
     color: '#00b0f0',
     colorName: '水蓝色',
+    colorNameEn: 'Aqua Blue',
     description: 'LoveLive! Sunshine!! 的主角组合，静冈县浦之星女学院的9名学园偶像。2015年结成，继承μ\'s的意志继续活动。',
+    descriptionEn: "The main group of LoveLive! Sunshine!!, 9 school idols from Uranohoshi Girls' High School in Shizuoka. Formed in 2015, carrying on μ's spirit.",
     totalLives: 15,
     totalSongs: 108,
     totalCDs: 32,
@@ -628,8 +632,33 @@ export const players = [
   },
 ]
 
+// 辅助函数：从完整罗马音名字中拆分出姓和名
+// 例如 "Emi Nitta" -> { firstName: 'Emi', lastName: 'Nitta' }
+function parseRomajiName(romajiName) {
+  if (!romajiName) return { firstName: '', lastName: '' }
+  const parts = romajiName.trim().split(/\s+/)
+  if (parts.length === 1) {
+    return { firstName: parts[0], lastName: '' }
+  }
+  const lastName = parts.pop()
+  const firstName = parts.join(' ')
+  return { firstName, lastName }
+}
+
 // 辅助函数：获取 HLTV 风格的显示名（名 "角色名" 姓）
-export function getDisplayName(player) {
+// lang 为 'en' 时使用罗马音显示，否则使用日语原名
+export function getDisplayName(player, lang = 'zh') {
+  if (lang === 'en') {
+    const seiyuu = parseRomajiName(player.romajiName)
+    const character = parseRomajiName(player.characterRomaji)
+    const characterFirstName = character.firstName || player.characterName
+    if (!seiyuu.lastName) {
+      return `${seiyuu.firstName} "${characterFirstName}"`
+    }
+    return `${seiyuu.firstName} "${characterFirstName}" ${seiyuu.lastName}`
+  }
+
+  // 默认日语格式
   if (!player.lastName) {
     return `${player.firstName} "${player.characterName}"`
   }

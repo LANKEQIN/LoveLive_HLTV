@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import { groups, players } from '../data/seiyuu'
+import { useI18n } from '../i18n'
 
 /**
  * 左侧边栏组件
  * HLTV 风格的侧边栏，包含企划快速链接和统计信息
  */
 function Sidebar() {
+  const { t } = useI18n()
+
   // 计算总统计
   const totalPlayers = players.length
   const totalGroups = groups.length
@@ -15,7 +18,7 @@ function Sidebar() {
       {/* 企划导航 */}
       <div>
         <h3 className="text-hltv-text-dim text-xs font-bold uppercase tracking-wider mb-2 px-2">
-          Groups
+          {t('sidebar.groups')}
         </h3>
         <div className="space-y-1">
           {groups.map(group => (
@@ -33,7 +36,7 @@ function Sidebar() {
                 <span className="font-medium">{group.name}</span>
               </div>
               <span className="text-hltv-text-dim text-xs">
-                {getPlayersByGroupCount(group.id)}人
+                {getPlayersByGroupCount(group.id)}{t('sidebar.membersUnit')}
               </span>
             </Link>
           ))}
@@ -46,27 +49,27 @@ function Sidebar() {
       {/* 快速统计 - HLTV 风格的信息面板 */}
       <div>
         <h3 className="text-hltv-text-dim text-xs font-bold uppercase tracking-wider mb-2 px-2">
-          Statistics
+          {t('sidebar.statistics')}
         </h3>
         <div className="space-y-1 text-sm">
           <div className="flex justify-between px-2 py-1">
-            <span className="text-hltv-text-dim">Total Players</span>
+            <span className="text-hltv-text-dim">{t('sidebar.totalPlayers')}</span>
             <span className="text-hltv-text-bright font-medium">{totalPlayers}</span>
           </div>
           <div className="flex justify-between px-2 py-1">
-            <span className="text-hltv-text-dim">Total Groups</span>
+            <span className="text-hltv-text-dim">{t('sidebar.totalGroups')}</span>
             <span className="text-hltv-text-bright font-medium">{totalGroups}</span>
           </div>
           <div className="flex justify-between px-2 py-1">
-            <span className="text-hltv-text-dim">Total Lives</span>
+            <span className="text-hltv-text-dim">{t('sidebar.totalLives')}</span>
             <span className="text-hltv-text-bright font-medium">27</span>
           </div>
           <div className="flex justify-between px-2 py-1">
-            <span className="text-hltv-text-dim">Total Songs</span>
+            <span className="text-hltv-text-dim">{t('sidebar.totalSongs')}</span>
             <span className="text-hltv-text-bright font-medium">204</span>
           </div>
           <div className="flex justify-between px-2 py-1">
-            <span className="text-hltv-text-dim">Total CDs</span>
+            <span className="text-hltv-text-dim">{t('sidebar.totalCDs')}</span>
             <span className="text-hltv-text-bright font-medium">60</span>
           </div>
         </div>
@@ -78,11 +81,10 @@ function Sidebar() {
       {/* 关于 */}
       <div>
         <h3 className="text-hltv-text-dim text-xs font-bold uppercase tracking-wider mb-2 px-2">
-          About
+          {t('sidebar.about')}
         </h3>
         <p className="text-xs text-hltv-text-dim px-2 leading-relaxed">
-          LoveLive! HLTV 是一个非官方的粉丝数据平台，
-          以 HLTV 风格展示 LoveLive! 声优与角色信息。
+          {t('sidebar.aboutText')}
         </p>
       </div>
     </aside>

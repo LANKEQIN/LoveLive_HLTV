@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { players, groups, getDisplayName, getGroupById } from '../data/seiyuu'
+import { useI18n } from '../i18n'
+import {
+  getRoleEn,
+  getColorNameEn,
+} from '../i18n/dataTranslations'
 
 /**
  * 选手/声优列表页
@@ -8,6 +13,8 @@ import { players, groups, getDisplayName, getGroupById } from '../data/seiyuu'
  * 支持按企划筛选，表格展示，点击可进入详情页
  */
 function Players() {
+  const { lang, t } = useI18n()
+
   // 当前选中的企划筛选器（'all' 或具体 groupId）
   const [filter, setFilter] = useState('all')
 
@@ -21,16 +28,16 @@ function Players() {
       {/* 页面标题 */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-hltv-text-bright">
-          Players
+          {t('players.title')}
           <span className="text-hltv-text-dim text-sm font-normal ml-2">
-            ({filteredPlayers.length} seiyuu)
+            ({t('players.seiyuuCount', { count: filteredPlayers.length })})
           </span>
         </h1>
 
         {/* 企划筛选标签 - HLTV 风格的 tab 切换 */}
         <div className="flex items-center gap-1">
           <FilterTab
-            label="All"
+            label={t('players.all')}
             active={filter === 'all'}
             onClick={() => setFilter('all')}
           />
@@ -52,14 +59,14 @@ function Players() {
           {/* 表头 */}
           <thead>
             <tr className="bg-hltv-bg-hover text-hltv-text-dim text-xs uppercase">
-              <th className="text-left px-3 py-2 w-10">#</th>
-              <th className="text-left px-3 py-2">Player</th>
-              <th className="text-left px-3 py-2">Group</th>
-              <th className="text-left px-3 py-2">Character</th>
-              <th className="text-center px-3 py-2 w-16">Color</th>
-              <th className="text-center px-3 py-2 w-20">Age</th>
-              <th className="text-left px-3 py-2 w-32">Role</th>
-              <th className="text-center px-3 py-2 w-20">Rating</th>
+              <th className="text-left px-3 py-2 w-10">{t('players.table.rank')}</th>
+              <th className="text-left px-3 py-2">{t('players.table.player')}</th>
+              <th className="text-left px-3 py-2">{t('players.table.group')}</th>
+              <th className="text-left px-3 py-2">{t('players.table.character')}</th>
+              <th className="text-center px-3 py-2 w-16">{t('players.table.color')}</th>
+              <th className="text-center px-3 py-2 w-20">{t('players.table.age')}</th>
+              <th className="text-left px-3 py-2 w-32">{t('players.table.role')}</th>
+              <th className="text-center px-3 py-2 w-20">{t('players.table.rating')}</th>
             </tr>
           </thead>
           {/* 表体 */}
@@ -83,7 +90,7 @@ function Players() {
                       className="text-hltv-link hover:text-hltv-link-hover font-medium"
                       onClick={e => e.stopPropagation()}
                     >
-                      {getDisplayName(player)}
+                      {getDisplayName(player, lang)}
                     </Link>
                   </td>
                   {/* 所属企划 */}
@@ -100,14 +107,14 @@ function Players() {
                   </td>
                   {/* 对应角色全名 */}
                   <td className="px-3 py-2 text-hltv-text">
-                    {player.characterFullName}
+                    {lang === 'en' ? player.characterRomaji : player.characterFullName}
                   </td>
                   {/* 角色代表色 - 色块展示 */}
                   <td className="px-3 py-2 text-center">
                     <span
                       className="inline-block w-4 h-4 rounded-full align-middle"
                       style={{ backgroundColor: player.characterColor }}
-                      title={player.characterColorName}
+                      title={lang === 'en' ? getColorNameEn(player.characterColorName) : player.characterColorName}
                     />
                   </td>
                   {/* 年龄（根据生日计算） */}
@@ -116,7 +123,7 @@ function Players() {
                   </td>
                   {/* 角色/队伍中的定位 */}
                   <td className="px-3 py-2 text-hltv-text-dim text-xs">
-                    {player.role}
+                    {lang === 'en' ? getRoleEn(player.role) : player.role}
                   </td>
                   {/* 综合评分 - HLTV 风格的彩色评分 */}
                   <td className="px-3 py-2 text-center">
@@ -136,7 +143,7 @@ function Players() {
 
       {/* 表格下方说明 */}
       <p className="text-xs text-hltv-text-dim mt-2 px-1">
-        * 名字格式: 声优的名 "角色名(ID)" 声优的姓 — 三次元声优信息优先展示
+        {t('players.nameFormatNote')}
       </p>
     </div>
   )

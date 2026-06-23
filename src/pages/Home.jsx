@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { players, groups, getDisplayName, getGroupById } from '../data/seiyuu'
+import { useI18n } from '../i18n'
 
 /**
  * 首页
@@ -7,6 +8,8 @@ import { players, groups, getDisplayName, getGroupById } from '../data/seiyuu'
  * 展示企划概览、热门选手和快速导航
  */
 function Home() {
+  const { lang, t } = useI18n()
+
   // 按评分排序，取前5名作为 Top Players
   const topPlayers = [...players]
     .sort((a, b) => calculateRating(b) - calculateRating(a))
@@ -20,22 +23,21 @@ function Home() {
           <span className="text-hltv-accent">LoveLive!</span> HLTV
         </h1>
         <p className="text-hltv-text-dim text-sm max-w-2xl">
-          以 HLTV 风格展示 LoveLive! 声优与角色数据的非官方粉丝平台。
-          名字格式: 声优的名 "角色名" 声优的姓 — 三次元声优信息优先展示。
+          {t('home.subtitle')}
         </p>
         <div className="flex gap-2 mt-4">
           <Link
             to="/players"
             className="px-4 py-2 bg-hltv-accent text-white rounded text-sm font-medium hover:bg-hltv-accent-hover transition-colors"
           >
-            Browse Players →
+            {t('home.browsePlayers')}
           </Link>
         </div>
       </div>
 
       {/* 企划概览 - 类似 HLTV 的赛事/Tournament 卡片 */}
       <h2 className="text-hltv-text-dim text-sm font-bold uppercase tracking-wider mb-3">
-        Groups
+        {t('home.groups')}
       </h2>
       <div className="grid grid-cols-2 gap-4 mb-6">
         {groups.map(group => {
@@ -55,16 +57,18 @@ function Home() {
                   {group.name}
                 </h3>
               </div>
-              <p className="text-hltv-text-dim text-xs mb-3">{group.description}</p>
+              <p className="text-hltv-text-dim text-xs mb-3">
+                {lang === 'en' && group.descriptionEn ? group.descriptionEn : group.description}
+              </p>
               <div className="flex gap-4 text-sm">
                 <span className="text-hltv-text-dim">
-                  Members: <span className="text-hltv-text-bright">{memberCount}</span>
+                  {t('home.members')}: <span className="text-hltv-text-bright">{memberCount}</span>
                 </span>
                 <span className="text-hltv-text-dim">
-                  Lives: <span className="text-hltv-text-bright">{group.totalLives}</span>
+                  {t('home.lives')}: <span className="text-hltv-text-bright">{group.totalLives}</span>
                 </span>
                 <span className="text-hltv-text-dim">
-                  Songs: <span className="text-hltv-text-bright">{group.totalSongs}</span>
+                  {t('home.songs')}: <span className="text-hltv-text-bright">{group.totalSongs}</span>
                 </span>
               </div>
             </Link>
@@ -74,17 +78,17 @@ function Home() {
 
       {/* Top Players 排行 - 类似 HLTV 的 Top 20 */}
       <h2 className="text-hltv-text-dim text-sm font-bold uppercase tracking-wider mb-3">
-        Top Players
+        {t('home.topPlayers')}
       </h2>
       <div className="bg-hltv-bg-secondary border border-hltv-border rounded overflow-hidden mb-6">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-hltv-bg-hover text-hltv-text-dim text-xs uppercase">
-              <th className="text-left px-3 py-2 w-10">#</th>
-              <th className="text-left px-3 py-2">Player</th>
-              <th className="text-left px-3 py-2">Group</th>
-              <th className="text-left px-3 py-2">Character</th>
-              <th className="text-center px-3 py-2 w-20">Rating</th>
+              <th className="text-left px-3 py-2 w-10">{t('home.rank')}</th>
+              <th className="text-left px-3 py-2">{t('home.player')}</th>
+              <th className="text-left px-3 py-2">{t('home.group')}</th>
+              <th className="text-left px-3 py-2">{t('home.character')}</th>
+              <th className="text-center px-3 py-2 w-20">{t('home.rating')}</th>
             </tr>
           </thead>
           <tbody>
@@ -102,13 +106,15 @@ function Home() {
                       to={`/players/${player.id}`}
                       className="text-hltv-link hover:text-hltv-link-hover font-medium"
                     >
-                      {getDisplayName(player)}
+                      {getDisplayName(player, lang)}
                     </Link>
                   </td>
                   <td className="px-3 py-2">
                     <span style={{ color: group.color }}>{group.name}</span>
                   </td>
-                  <td className="px-3 py-2 text-hltv-text">{player.characterFullName}</td>
+                  <td className="px-3 py-2 text-hltv-text">
+                    {lang === 'en' ? player.characterRomaji : player.characterFullName}
+                  </td>
                   <td className="px-3 py-2 text-center">
                     <span className="font-bold" style={{ color: getRatingColor(rating) }}>
                       {rating.toFixed(2)}
@@ -123,7 +129,7 @@ function Home() {
 
       {/* 底部信息提示 */}
       <div className="text-center text-xs text-hltv-text-dim">
-        More features coming soon: Teams · Matches · Rankings · Stats
+        {t('home.moreFeatures')}
       </div>
     </div>
   )
