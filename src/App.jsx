@@ -8,6 +8,9 @@ import TeamDetail from './pages/TeamDetail'
 import Matches from './pages/Matches'
 import MatchDetail from './pages/MatchDetail'
 import Rankings from './pages/Rankings'
+import Stats from './pages/Stats'
+import Search from './pages/Search'
+import Compare from './pages/Compare'
 
 /**
  * 根组件 - 路由配置
@@ -33,6 +36,12 @@ function App() {
         <Route path="/matches/:id" element={<MatchDetail />} />
         {/* 排行榜页 */}
         <Route path="/rankings" element={<Rankings />} />
+        {/* 统计页 */}
+        <Route path="/stats" element={<Stats />} />
+        {/* 搜索页 */}
+        <Route path="/search" element={<Search />} />
+        {/* 选手对比页 */}
+        <Route path="/compare" element={<Compare />} />
         {/* 未知路径重定向到首页 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

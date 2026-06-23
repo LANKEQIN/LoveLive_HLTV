@@ -23,6 +23,39 @@ export const roleEnMap = {
   '図書委員': 'Library Committee',
   'ダイヤの妹': "Dia's Younger Sister",
   '理事長娘': "Chairman's Daughter",
+  // 虹ヶ咲
+  'センター候補': 'Center Candidate',
+  '妹系担当': 'Little Sister Type',
+  '演劇部': 'Drama Club',
+  'ファッションモデル': 'Fashion Model',
+  '元気担当': 'Energy Booster',
+  '寝起き担当': 'Sleepyhead',
+  '熱血担当': 'Passionate Type',
+  '癒し担当': 'Healing Type',
+  'ボードアーティスト': 'Board Artist',
+  '後輩代表': 'Underclassman Rep',
+  '天才作曲家': 'Genius Composer',
+  '香港出身': 'From Hong Kong',
+  // Liella!
+  '中国出身': 'From China',
+  'ダンス担当': 'Dance Lead',
+  '元気印': 'Mood Maker',
+  '田舎っ子': 'Country Girl',
+  'ギャップ担当': 'Gap Appeal',
+  '科学担当': 'Science Whiz',
+  'インフルエンサー': 'Influencer',
+  'オーストリア出身': 'From Austria',
+  '夏美の妹': "Natsumi's Sister",
+  // 蓮ノ空
+  '真面目担当': 'Serious Type',
+  'お嬢様': 'Young Lady',
+  '自由人': 'Free Spirit',
+  '流行担当': 'Trend Setter',
+  // その他
+  'サニパ赤': 'Sunny Red',
+  'サニパ黄': 'Sunny Yellow',
+  '姉': 'Older Sister',
+  '妹': 'Younger Sister',
 }
 
 // 出身地映射（保留日本地名的罗马音常见写法）
@@ -36,12 +69,24 @@ export const birthplaceEnMap = {
   '北海道': 'Hokkaido',
   '兵庫県': 'Hyogo',
   '愛知県': 'Aichi',
+  '福岡県': 'Fukuoka',
+  '宮城県': 'Miyagi',
+  '熊本県': 'Kumamoto',
+  '鹿児島県': 'Kagoshima',
+  '香港': 'Hong Kong',
+  '中国': 'China',
+  'オーストラリア': 'Australia',
 }
 
 // 学校映射
 export const schoolEnMap = {
   '音乃木坂学院': 'Otonokizaka High School',
-  '浦之星女学院': 'Uranohoshi Girls\' High School',
+  '浦之星女学院': "Uranohoshi Girls' High School",
+  '虹ヶ咲学園': 'Nijigasaki High School',
+  '結ヶ丘女子高等学校': "Yuigaoka Girls' High School",
+  '蓮ノ空女学院': "Hasunosora Girls' High School",
+  '神津女子高等学校': "Tenzu Girls' High School",
+  '函館聖泉女子高等学院': "Hakodate Seisen Girls' High School",
 }
 
 // 年级映射
@@ -67,6 +112,19 @@ export const colorNameEnMap = {
   '樱花色': 'Sakura Pink',
   '碧色': 'Turquoise',
   '白银色': 'Silver',
+  // 新颜色
+  '桃色': 'Peach Pink',
+  '銀色': 'Silver',
+  '黒色': 'Black',
+  '灰色': 'Gray',
+  '紅色': 'Crimson',
+  '緑色': 'Green',
+  '青色': 'Blue',
+  '藤色': 'Wisteria',
+  '薄紫色': 'Light Purple',
+  '濃桃色': 'Deep Pink',
+  '菫色': 'Violet',
+  '红色': 'Red',
 }
 
 /**

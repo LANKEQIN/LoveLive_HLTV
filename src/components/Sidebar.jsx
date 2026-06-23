@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { groups, players } from '../data/seiyuu'
+import { groups, players, lives } from '../data/seiyuu'
 import { useI18n } from '../i18n'
 
 /**
@@ -12,9 +12,13 @@ function Sidebar() {
   // 计算总统计
   const totalPlayers = players.length
   const totalGroups = groups.length
+  const totalLives = groups.reduce((sum, g) => sum + g.totalLives, 0)
+  const totalSongs = groups.reduce((sum, g) => sum + g.totalSongs, 0)
+  const totalCDs = groups.reduce((sum, g) => sum + g.totalCDs, 0)
+  const totalAttendance = lives.reduce((sum, live) => sum + live.attendance, 0)
 
   return (
-    <aside className="w-52 shrink-0 border-r border-hltv-border bg-hltv-bg p-3 space-y-4">
+    <aside className="hidden lg:block w-52 shrink-0 border-r border-hltv-border bg-hltv-bg p-3 space-y-4">
       {/* 企划导航 */}
       <div>
         <h3 className="text-hltv-text-dim text-xs font-bold uppercase tracking-wider mb-2 px-2">
@@ -62,16 +66,44 @@ function Sidebar() {
           </div>
           <div className="flex justify-between px-2 py-1">
             <span className="text-hltv-text-dim">{t('sidebar.totalLives')}</span>
-            <span className="text-hltv-text-bright font-medium">27</span>
+            <span className="text-hltv-text-bright font-medium">{totalLives}</span>
           </div>
           <div className="flex justify-between px-2 py-1">
             <span className="text-hltv-text-dim">{t('sidebar.totalSongs')}</span>
-            <span className="text-hltv-text-bright font-medium">204</span>
+            <span className="text-hltv-text-bright font-medium">{totalSongs}</span>
           </div>
           <div className="flex justify-between px-2 py-1">
             <span className="text-hltv-text-dim">{t('sidebar.totalCDs')}</span>
-            <span className="text-hltv-text-bright font-medium">60</span>
+            <span className="text-hltv-text-bright font-medium">{totalCDs}</span>
           </div>
+          <div className="flex justify-between px-2 py-1">
+            <span className="text-hltv-text-dim">{t('stats.totalAttendance')}</span>
+            <span className="text-hltv-text-bright font-medium">{formatNumber(totalAttendance)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 分割线 */}
+      <div className="border-t border-hltv-border" />
+
+      {/* 快捷功能 */}
+      <div>
+        <h3 className="text-hltv-text-dim text-xs font-bold uppercase tracking-wider mb-2 px-2">
+          Tools
+        </h3>
+        <div className="space-y-1">
+          <Link
+            to="/compare"
+            className="block px-2 py-1.5 rounded text-sm text-hltv-text hover:bg-hltv-bg-hover transition-colors"
+          >
+            {t('compare.title')}
+          </Link>
+          <Link
+            to="/stats"
+            className="block px-2 py-1.5 rounded text-sm text-hltv-text hover:bg-hltv-bg-hover transition-colors"
+          >
+            {t('stats.title')}
+          </Link>
         </div>
       </div>
 
@@ -94,6 +126,11 @@ function Sidebar() {
 // 辅助函数：获取企划成员数量
 function getPlayersByGroupCount(groupId) {
   return players.filter(p => p.groupId === groupId).length
+}
+
+// 数字格式化
+function formatNumber(num) {
+  return num.toLocaleString('en-US')
 }
 
 export default Sidebar

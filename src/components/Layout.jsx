@@ -6,7 +6,7 @@ import Footer from './Footer'
 /**
  * 整体布局组件
  * 组合 Header + Sidebar + 主内容区 + Footer
- * 模仿 HLTV 的经典布局结构
+ * 模仿 HLTV 的经典布局结构，并支持响应式
  */
 function Layout() {
   return (
@@ -17,7 +17,7 @@ function Layout() {
       {/* 主内容区域：左侧边栏 + 右侧内容 */}
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 w-full">
           <Outlet />
         </main>
       </div>
