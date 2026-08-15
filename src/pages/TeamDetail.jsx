@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   getGroupById,
@@ -17,6 +18,8 @@ function TeamDetail() {
   const { id } = useParams()
   const { lang, t } = useI18n()
   const group = getGroupById(id)
+  // 关系类型筛选状态：'all' 表示全部类型
+  const [relationFilter, setRelationFilter] = useState('all')
 
   // 组合不存在时的处理
   if (!group) {
@@ -33,6 +36,14 @@ function TeamDetail() {
   const members = getPlayersByGroup(group.id)
   const lives = getLivesByGroup(group.id)
   const relationships = getRelationshipsByGroup(group.id)
+  // 该组合实际存在的关系类型（用于筛选按钮，仅展示有的类型）
+  const availableTypes = [...new Set(relationships.map(r => r.type))]
+  // 筛选值兜底：若当前筛选类型在该组合中不存在（如切换组合后残留状态），回退为全部
+  const effectiveFilter =
+    relationFilter === 'all' || availableTypes.includes(relationFilter) ? relationFilter : 'all'
+  // 按筛选条件过滤后的关系列表
+  const filteredRelationships =
+    effectiveFilter === 'all' ? relationships : relationships.filter(r => r.type === effectiveFilter)
   const totalAttendance = lives.reduce((sum, live) => sum + live.attendance, 0)
 
   return (
@@ -154,14 +165,33 @@ function TeamDetail() {
         </div>
       </div>
 
-      {/* 成员关系图 */}
+      {/* 成员关系图（支持按类型筛选） */}
       <div>
-        <h2 className="text-hltv-text-dim text-sm font-bold uppercase tracking-wider mb-3">
-          {t('teams.relationships')}
-        </h2>
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 className="text-hltv-text-dim text-sm font-bold uppercase tracking-wider">
+            {t('teams.relationships')}
+          </h2>
+          {/* 类型筛选按钮组：全部 + 该组合存在的关系类型 */}
+          <div className="flex gap-1">
+            <FilterButton
+              active={effectiveFilter === 'all'}
+              onClick={() => setRelationFilter('all')}
+              label={t('teams.filter.all')}
+            />
+            {availableTypes.map(type => (
+              <FilterButton
+                key={type}
+                active={effectiveFilter === type}
+                onClick={() => setRelationFilter(type)}
+                label={t(`teams.filter.${type}`)}
+                type={type}
+              />
+            ))}
+          </div>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {relationships.map(relation => (
-            <RelationCard key={relation.id} relation={relation} lang={lang} />
+          {filteredRelationships.map(relation => (
+            <RelationCard key={relation.id} relation={relation} lang={lang} t={t} />
           ))}
         </div>
       </div>
@@ -170,10 +200,21 @@ function TeamDetail() {
 }
 
 /**
- * 关系统计卡片
- * 展示小队或 CP 关系，及对应成员的角色色
+ * 关系类型的视觉配置（标签颜色）
+ * officialUnit: 官方小队（金色）/ subunit: 年级组（蓝色）/ cp: CP（粉色）
  */
-function RelationCard({ relation, lang }) {
+const RELATION_TYPE_COLORS = {
+  officialUnit: '#d4a017',
+  subunit: '#5d9eff',
+  cp: '#ff6b9d',
+}
+
+/**
+ * 关系统计卡片
+ * 展示官方小队 / 年级组 / CP 关系，及对应成员的角色色
+ */
+function RelationCard({ relation, lang, t }) {
+  const typeColor = RELATION_TYPE_COLORS[relation.type] || '#5d9eff'
   return (
     <div className="bg-hltv-bg-secondary border border-hltv-border rounded p-3">
       <div className="flex items-center justify-between mb-2">
@@ -183,14 +224,14 @@ function RelationCard({ relation, lang }) {
         <span
           className="text-xs px-1.5 py-0.5 rounded"
           style={{
-            backgroundColor: relation.type === 'cp' ? '#ff6b9d22' : '#5d9eff22',
-            color: relation.type === 'cp' ? '#ff6b9d' : '#5d9eff',
+            backgroundColor: `${typeColor}22`,
+            color: typeColor,
           }}
         >
-          {relation.type === 'cp' ? 'CP' : 'Subunit'}
+          {t(`teams.type.${relation.type}`)}
         </span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {relation.members.map(name => {
           const player = getPlayerByCharacterName(name)
           return (
@@ -205,6 +246,30 @@ function RelationCard({ relation, lang }) {
         })}
       </div>
     </div>
+  )
+}
+
+/**
+ * 关系类型筛选按钮
+ */
+function FilterButton({ active, onClick, label, type }) {
+  const typeColor = type ? RELATION_TYPE_COLORS[type] : null
+  return (
+    <button
+      onClick={onClick}
+      className="text-xs px-2 py-1 rounded border transition-colors cursor-pointer"
+      style={{
+        backgroundColor: active
+          ? typeColor
+            ? `${typeColor}33`
+            : '#2d3139'
+          : 'transparent',
+        borderColor: active ? (typeColor || '#4a5058') : '#3a4048',
+        color: active ? (typeColor || '#cad0d6') : '#8a919c',
+      }}
+    >
+      {label}
+    </button>
   )
 }
 

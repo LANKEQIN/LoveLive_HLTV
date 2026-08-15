@@ -67,7 +67,8 @@ src/
     players.js         → 声优/角色数据（μ's + Aqours + 虹咲 + Liella! + 莲之空等）
     groups.js          → 企划组合数据（7个组合）
     lives.js           → Live/演唱会数据
-    songs.js           → 歌曲数据
+    songs.js           → 歌曲数据（239首，含发行日期/Center/演唱阵容/词曲等字段）
+    discs.js           → 单曲/专辑唱片数据（112张，含品番/销量/收录曲）
     relationships.js   → 成员关系数据（CP/小队）
   i18n/                → 国际化模块
     I18nContext.jsx    → 语言上下文与 Provider
@@ -171,12 +172,24 @@ src/
 - [x] **数据可视化图表**（Recharts）
 - [x] **响应式适配**（移动端菜单、自适应布局）
 
-### 待完成 (Phase 4 · 远期)
+### 已完成 (Phase 4.1)
 
-- [ ] 后端 API（从静态数据迁移到动态接口）
-- [ ] 数据管理后台
-- [ ] 用户系统（收藏、评论）
-- [ ] 多语言支持（中日英三语）
+- [x] **歌曲数据补全**
+  - 扩充歌曲字段：`releaseDate`（发行日期）、`singleId`（所属唱片）、`center`（Center 成员）、`performers`（演唱阵容）、`lyricist`/`composer`（作词/作曲）、`type`（single/album/solo/coupling）
+  - 补录全企划单曲主打曲：μ's（8 张编号单曲 + 动画/剧场版/联动单曲）、Aqours（4 张编号单曲 + 全部动画/剧场版/Live 主题歌单曲）、虹咲（5 张全员专辑 + 全部组合单曲）、Liella!（1st〜21st 单曲）、莲之空（迷你专辑 + 7 张全员单曲）
+  - 新建 `src/data/discs.js` 唱片数据（112 张）：编号、名称、品番、封面色、发行日期、销量、收录曲
+  - 补充虹咲 27 首、莲之空 15 首 solo 曲（动画插入歌、专辑 solo、R3BIRTH、毕业专辑新录、Link! Like! 翻唱）
+  - 数据经官方 CD 页 / Oricon / llwiki 多源交叉验证（累计 239 首歌曲）
+
+### 待完成（Phase 4 剩余 + Phase 5-8）
+
+详细计划见 [docs/开发计划.md](docs/开发计划.md)，概要：
+
+- **Phase 4 剩余 · 数据深化** — 官方小队录入（Printemps/BiBi/lily white 等）、Live setlist 关联、跨企划关系、莲之空 104/105 期成员补录
+- **Phase 5 · 新功能页面** — 歌曲列表/详情页、单曲页、大型活动页、选手生涯时间线、企划大事记
+- **Phase 6 · HLTV 风格深化** — 首页动态流、"转会"（加入/毕业）系统、选手成就、生涯曲线
+- **Phase 7 · 工程化与部署** — Vitest 测试、代码分割、GitHub Actions CI、部署上线
+- **Phase 8 · 轻量后端（可选）** — 数据 API 化（dataProvider 抽象 + JSON 导出），不做用户系统
 
 ## 许可声明
 
