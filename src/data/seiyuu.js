@@ -84,8 +84,9 @@ export function getLiveById(id) {
 }
 
 // 辅助函数：获取指定企划的关系数据
+// 兼容两种归属写法：单企划关系 groupId；跨企划关系 groupIds 数组（在所有涉及企划页展示）
 export function getRelationshipsByGroup(groupId) {
-  return relationships.filter(r => r.groupId === groupId)
+  return relationships.filter(r => r.groupId === groupId || (Array.isArray(r.groupIds) && r.groupIds.includes(groupId)))
 }
 
 // 辅助函数：根据角色名获取选手（用于关系图）

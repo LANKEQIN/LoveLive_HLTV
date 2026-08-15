@@ -51,6 +51,12 @@ export const roleEnMap = {
   'お嬢様': 'Young Lady',
   '自由人': 'Free Spirit',
   '流行担当': 'Trend Setter',
+  // 蓮ノ空 104/105 期
+  '伝統・衣装担当': 'Tradition & Costumes',
+  'チャレンジ担当': 'Challenger',
+  'ゲーマー担当': 'Gamer',
+  '推し活担当': 'Superfan',
+  'オールラウンダー': 'All-Rounder',
   // その他
   'サニパ赤': 'Sunny Red',
   'サニパ黄': 'Sunny Yellow',
@@ -125,6 +131,12 @@ export const colorNameEnMap = {
   '濃桃色': 'Deep Pink',
   '菫色': 'Violet',
   '红色': 'Red',
+  // 蓮ノ空 104/105 期新成员
+  '天之原色': 'Sky Blue',
+  '一番星色': 'Evening Star',
+  '糖果紫色': 'Sugar Purple',
+  '上升猩红色': 'Rising Scarlet',
+  '骑士绿': 'Chevalier Green',
 }
 
 /**

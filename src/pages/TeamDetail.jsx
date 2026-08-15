@@ -202,27 +202,39 @@ function TeamDetail() {
 /**
  * 关系类型的视觉配置（标签颜色）
  * officialUnit: 官方小队（金色）/ subunit: 年级组（蓝色）/ cp: CP（粉色）
+ * admiration: 跨企划憧憬（淡紫）/ crossUnit: 跨企划组合（绿色）/ sameAgency: 同事务所（橙色）
  */
 const RELATION_TYPE_COLORS = {
   officialUnit: '#d4a017',
   subunit: '#5d9eff',
   cp: '#ff6b9d',
+  admiration: '#c9a0ff',
+  crossUnit: '#5fb048',
+  sameAgency: '#e8a33d',
 }
 
 /**
  * 关系统计卡片
- * 展示官方小队 / 年级组 / CP 关系，及对应成员的角色色
+ * 展示官方小队 / 年级组 / CP / 跨企划关系，及对应成员的角色色
+ * - admiration 类型带方向性：from 企划成员 → to 企划成员
+ * - 跨企划关系（groupIds 多于 1 个）在成员后追加所属企划徽章
+ * - 含 description 的关系展示说明文字
  */
 function RelationCard({ relation, lang, t }) {
   const typeColor = RELATION_TYPE_COLORS[relation.type] || '#5d9eff'
+  const isAdmiration = relation.type === 'admiration' && relation.from && relation.to
+  // 跨企划关系：为每个成员标注所属企划
+  const showGroupBadge = Array.isArray(relation.groupIds) && relation.groupIds.length > 1
+  const description = lang === 'en' ? relation.descriptionEn : relation.description
+
   return (
-    <div className="bg-hltv-bg-secondary border border-hltv-border rounded p-3">
-      <div className="flex items-center justify-between mb-2">
+    <div className="bg-hltv-bg-secondary border border-hltv-border rounded p-3 flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-hltv-text-bright font-medium text-sm">
           {lang === 'en' ? relation.nameEn : relation.name}
         </span>
         <span
-          className="text-xs px-1.5 py-0.5 rounded"
+          className="text-xs px-1.5 py-0.5 rounded shrink-0"
           style={{
             backgroundColor: `${typeColor}22`,
             color: typeColor,
@@ -231,21 +243,71 @@ function RelationCard({ relation, lang, t }) {
           {t(`teams.type.${relation.type}`)}
         </span>
       </div>
-      <div className="flex items-center gap-2 flex-wrap">
-        {relation.members.map(name => {
-          const player = getPlayerByCharacterName(name)
-          return (
-            <div key={name} className="flex items-center gap-1.5">
-              <span
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: player?.characterColor || '#888' }}
-              />
-              <span className="text-xs text-hltv-text">{name}</span>
-            </div>
-          )
-        })}
-      </div>
+
+      {/* 憧憬关系：方向性展示 from → to */}
+      {isAdmiration ? (
+        <div className="flex items-center gap-x-2 gap-y-1 flex-wrap">
+          <GroupLabel groupId={relation.from.groupId} />
+          {relation.from.members.map(name => (
+            <MemberChip key={name} name={name} />
+          ))}
+          <span className="text-hltv-accent font-bold">→</span>
+          <GroupLabel groupId={relation.to.groupId} />
+          {relation.to.members.map(name => (
+            <MemberChip key={name} name={name} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 flex-wrap">
+          {relation.members.map(name => (
+            <MemberChip key={name} name={name} showGroup={showGroupBadge} />
+          ))}
+        </div>
+      )}
+
+      {/* 关系说明文字 */}
+      {description && (
+        <p className="text-xs text-hltv-text-dim leading-relaxed">{description}</p>
+      )}
     </div>
+  )
+}
+
+/**
+ * 企划名小标签（用于跨企划关系，标注成员所属）
+ */
+function GroupLabel({ groupId }) {
+  const group = getGroupById(groupId)
+  if (!group) return null
+  return (
+    <span
+      className="text-xs px-1 py-0.5 rounded"
+      style={{ backgroundColor: `${group.color}22`, color: group.color }}
+    >
+      {group.name}
+    </span>
+  )
+}
+
+/**
+ * 成员芯片：角色色圆点 + 角色名（可选企划徽章）
+ */
+function MemberChip({ name, showGroup }) {
+  const player = getPlayerByCharacterName(name)
+  const group = showGroup && player ? getGroupById(player.groupId) : null
+  return (
+    <span className="flex items-center gap-1">
+      <span className="flex items-center gap-1.5">
+        <span
+          className="w-3 h-3 rounded-full"
+          style={{ backgroundColor: player?.characterColor || '#888' }}
+        />
+        <span className="text-xs text-hltv-text">{name}</span>
+      </span>
+      {group && (
+        <span className="text-xs text-hltv-text-dim/70">{group.name}</span>
+      )}
+    </span>
   )
 }
 
