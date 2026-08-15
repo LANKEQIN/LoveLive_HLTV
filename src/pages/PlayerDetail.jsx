@@ -105,13 +105,26 @@ function PlayerDetail() {
           <dl className="space-y-2 text-sm">
             <InfoRow label={t('playerDetail.labels.name')} value={lang === 'en' ? player.romajiName : player.fullName} />
             <InfoRow label={t('playerDetail.labels.romaji')} value={player.romajiName} />
-            <InfoRow label={t('playerDetail.labels.birthday')} value={formatDate(player.birthdate, lang)} />
-            <InfoRow label={t('playerDetail.labels.birthplace')} value={lang === 'en' ? getBirthplaceEn(player.birthplace) : player.birthplace} />
-            <InfoRow label={t('playerDetail.labels.bloodType')} value={player.bloodType} />
-            <InfoRow label={t('playerDetail.labels.height')} value={`${player.height} ${t('playerDetail.heightUnit')}`} />
-            <InfoRow label={t('playerDetail.labels.agency')} value={player.agency} />
+            {/* 部分新声优公开资料有限，未提供的字段（生日/血型/身高/事务所等）自动隐藏 */}
+            {player.birthdate && (
+              <InfoRow label={t('playerDetail.labels.birthday')} value={formatDate(player.birthdate, lang)} />
+            )}
+            {player.birthplace && (
+              <InfoRow label={t('playerDetail.labels.birthplace')} value={lang === 'en' ? getBirthplaceEn(player.birthplace) : player.birthplace} />
+            )}
+            {player.bloodType && (
+              <InfoRow label={t('playerDetail.labels.bloodType')} value={player.bloodType} />
+            )}
+            {player.height && (
+              <InfoRow label={t('playerDetail.labels.height')} value={`${player.height} ${t('playerDetail.heightUnit')}`} />
+            )}
+            {player.agency && (
+              <InfoRow label={t('playerDetail.labels.agency')} value={player.agency} />
+            )}
             <InfoRow label={t('playerDetail.labels.debut')} value={player.debutYear} />
-            <InfoRow label={t('playerDetail.labels.age')} value={`${calcAge(player.birthdate)} ${t('playerDetail.years')}`} />
+            {player.birthdate && (
+              <InfoRow label={t('playerDetail.labels.age')} value={`${calcAge(player.birthdate)} ${t('playerDetail.years')}`} />
+            )}
           </dl>
         </div>
 
@@ -128,6 +141,10 @@ function PlayerDetail() {
             <InfoRow label={t('playerDetail.labels.romaji')} value={player.characterRomaji} />
             <InfoRow label={t('playerDetail.labels.school')} value={lang === 'en' ? getSchoolEn(player.characterSchool) : player.characterSchool} />
             <InfoRow label={t('playerDetail.labels.grade')} value={lang === 'en' ? getGradeEn(player.characterGrade) : player.characterGrade} />
+            {/* 世代标记（莲之空 103/104/105 期等按入学年度划分的世代） */}
+            {player.generation && (
+              <InfoRow label={t('playerDetail.labels.generation')} value={player.generation} />
+            )}
             <InfoRow label={t('playerDetail.labels.age')} value={`${player.characterAge} ${t('playerDetail.years')}`} />
             <InfoRow label={t('playerDetail.labels.color')} value={lang === 'en' ? getColorNameEn(player.characterColorName) : player.characterColorName}>
               <span

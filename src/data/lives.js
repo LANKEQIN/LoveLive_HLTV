@@ -24,8 +24,8 @@ const MUSE_PLAYERS = [
 ]
 // Aqours 9 人
 const AQOURS_PLAYERS = [
-  'inami-anju', 'aida-riko', 'suwa-nanaka', 'saito-chiwa',
-  'komiya-arisa', 'suzuki-aina', 'tanaka-minami', 'ohnishi-aguri', 'takatsuki-kanako',
+  'inami-anju', 'aida-riko', 'suwa-nanaka', 'komiya-arisa',
+  'saito-shuka', 'kobayashi-aika', 'takatsuki-kanako', 'suzuki-aina', 'furihata-ai',
 ]
 // 虹ヶ咲 初期 9 人（1st Live 〜 Fest 时期阵容）
 const NIJI_PLAYERS_9 = [
@@ -654,7 +654,7 @@ export const lives = [
     noteEn: 'A tournament-style joint live featuring all 16 official sub-units, with play-by-play by announcer Yasuo Fujii and commentary by Hinaki Yano (Yu Takasaki).',
     memberStatus: [
       {
-        playerId: 'tanaka-minami',
+        playerId: 'takatsuki-kanako',
         attendance: 'absent',
         note: '两日均缺席（2024-03-04 官方发表辞演，AZALEA 以 2 人编制出演）',
         noteEn: 'Absent both days (announced Mar 4, 2024; AZALEA performed as a duo)',
