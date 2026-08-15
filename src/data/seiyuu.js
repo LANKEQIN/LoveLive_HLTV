@@ -15,12 +15,14 @@ export { groups } from './groups'
 export { players } from './players'
 export { lives } from './lives'
 export { songs } from './songs'
+export { discs } from './discs'
 export { relationships } from './relationships'
 
 import { players } from './players'
 import { groups } from './groups'
 import { lives } from './lives'
 import { songs } from './songs'
+import { discs } from './discs'
 import { relationships } from './relationships'
 
 // 辅助函数：从完整罗马音名字中拆分出姓和名
@@ -94,4 +96,70 @@ export function getPlayerByCharacterName(characterName) {
 // 辅助函数：获取指定企划的歌曲
 export function getSongsByGroup(groupId) {
   return songs.filter(s => s.groupId === groupId)
+}
+
+// 辅助函数：根据 id 获取歌曲
+export function getSongById(id) {
+  return songs.find(s => s.id === id)
+}
+
+// 辅助函数：获取指定企划的唱片（单曲/专辑）
+export function getDiscsByGroup(groupId) {
+  return discs.filter(d => d.groupId === groupId)
+}
+
+// 辅助函数：根据 id 获取唱片
+export function getDiscById(id) {
+  return discs.find(d => d.id === id)
+}
+
+// 辅助函数：获取指定唱片的所有收录曲（按唱片 tracks 顺序解析歌曲对象）
+export function getSongsByDisc(discId) {
+  const disc = getDiscById(discId)
+  if (!disc) return []
+  return disc.tracks.map(trackId => getSongById(trackId)).filter(Boolean)
+}
+
+// 辅助函数：解析 Live 歌单条目为可显示对象
+// 条目格式：{ songId } 关联歌曲对象；{ title, titleEn } 纯文本；兼容旧的纯字符串格式
+// 返回 { song, title, titleEn }（song 为 null 表示未关联歌曲库）
+export function resolveSetlistEntry(entry) {
+  // 兼容旧版纯文本歌名
+  if (typeof entry === 'string') {
+    return { song: null, title: entry, titleEn: entry }
+  }
+  if (!entry) return { song: null, title: '', titleEn: '' }
+  if (entry.songId) {
+    const song = getSongById(entry.songId)
+    if (song) {
+      return { song, title: song.title, titleEn: song.titleEn || song.title }
+    }
+  }
+  return { song: null, title: entry.title || '', titleEn: entry.titleEn || entry.title || '' }
+}
+
+// 辅助函数：获取 Live 实际出演选手列表
+// 优先使用显式 performers 名单（追加期次成员加入前的场次必须显式指定），
+// 缺省按 groupIds 组合全员推导，并剔除 memberStatus 中标记全程缺席（absent）的成员
+export function getLivePerformers(live) {
+  if (!live) return []
+  let list
+  if (live.performers && live.performers.length) {
+    list = live.performers.map(id => getPlayerById(id)).filter(Boolean)
+  } else {
+    list = players.filter(p => live.groupIds.includes(p.groupId))
+  }
+  // 剔除全程缺席成员
+  const absentIds = (live.memberStatus || [])
+    .filter(s => s.attendance === 'absent')
+    .map(s => s.playerId)
+  return list.filter(p => !absentIds.includes(p.id))
+}
+
+// 辅助函数：获取 Live 出演成员明细（缺席 / 部分出演记录），解析为选手对象
+export function getLiveMemberStatus(live) {
+  if (!live || !live.memberStatus) return []
+  return live.memberStatus
+    .map(s => ({ ...s, player: getPlayerById(s.playerId) }))
+    .filter(s => s.player)
 }
