@@ -679,4 +679,33 @@ export const lives = [
       },
     ],
   },
+  {
+    id: 'countdown-lovelive-2021',
+    name: 'LoveLive! Series Presents COUNTDOWN LoveLive! 2021→2022 〜LIVE with a smile!〜',
+    nameEn: 'LoveLive! Series Presents COUNTDOWN LoveLive! 2021→2022 ~LIVE with a smile!~',
+    date: '2021-12-31',
+    venue: 'ぴあアリーナMM',
+    venueEn: 'Pia Arena MM',
+    city: '横浜',
+    cityEn: 'Yokohama',
+    groupIds: ['aqours', 'nijigasaki', 'liella'],
+    // Aqours 9 人 + 虹ヶ咲 12 人 + Liella! 1 期生 5 人
+    performers: [
+      ...AQOURS_PLAYERS,
+      ...NIJI_PLAYERS_12,
+      ...LIELLA_PLAYERS_5,
+    ],
+    setlist: [
+      { songId: 'hajimari-wa-kimi-no-sora' }, // 三团代表合同开场
+      { songId: 'tokimeki-runners' },
+      { title: 'DREAMY COLOR', titleEn: 'DREAMY COLOR' },
+      { songId: 'water-blue-new-world' }, // Aqours 篇章
+      { songId: 'just-believe' }, // 虹ヶ咲 篇章
+      { songId: 'nonfiction' }, // Liella! 篇章
+      { title: 'LIVE with a smile!', titleEn: 'LIVE with a smile!' }, // 三团合同主题歌
+    ],
+    status: 'completed',
+    note: '系列首次跨年倒计时合同 Live（21:00 开演）。国木田花丸役・高槻かなこの出演一度悬而未决，2021-12-26 官方确认按计划出演。',
+    noteEn: 'The series\u2019 first countdown joint live. Kanako Takatsuki\u2019s participation was confirmed on Dec 26, 2021 after careful consideration.',
+  },
 ]

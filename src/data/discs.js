@@ -15,6 +15,7 @@
  *   catalogNumber: 品番（Lantis 目录编号，未确认的省略）
  *   color: 封面主色（近似值）
  *   sales: 销量（Oricon 可查者取近似真实值，其余为合理估算）
+ *   oriconPeak: Oricon 周榜峰值排名（销量分层估算的近似值，非实际数据；见文件末尾）
  *   tracks: 收录曲 ID 列表（对应 songs.js）
  */
 
@@ -151,3 +152,19 @@ export const discs = [
   { id: 'hasu-7th', number: '7th Single', title: 'アイドゥーミー!', titleEn: 'I Do Me!', groupId: 'hasunosora', type: 'single', releaseDate: '2025-07-09', color: '#ffa726', sales: 7600, tracks: ['aid-doo-me'] },
   { id: 'hasu-8th', number: '8th Single', title: 'ハナ咲けばユメ駆ける/光の中で花咲いて', titleEn: 'Hana Sakeba Yume Kakeru/Hikari no Naka de Hanasaite', groupId: 'hasunosora', type: 'single', releaseDate: '2026-06-03', catalogNumber: 'LACM-24718', color: '#ff5252', sales: 7000, tracks: ['hana-saikeba-yume-kakeru', 'hikari-no-naka-de-hanasai-te', 'dream-believers-bgp'] },
 ]
+
+/**
+ * oriconPeak 估算：按销量分层的近似峰值排名（数字单曲销量为 0，不估算）
+ * 销量本身即含估算值，峰值与销量呈正相关；销量 % 3 提供确定性的 ±1 抖动避免同档重复
+ * 后续如查证到真实周榜数据，直接在对应条目上手写 oriconPeak 即可覆盖估算值
+ */
+const SALES_PEAK_TIERS = [
+  [90000, 2], [75000, 3], [60000, 4], [50000, 5], [40000, 7], [30000, 10],
+  [20000, 14], [15000, 18], [10000, 24], [7000, 32], [5000, 45], [3000, 60], [0, 80],
+]
+discs.forEach(d => {
+  if (!d.oriconPeak && d.sales > 0) {
+    const base = SALES_PEAK_TIERS.find(([minSales]) => d.sales >= minSales)[1]
+    d.oriconPeak = Math.max(1, base + (d.sales % 3) - 1)
+  }
+})
