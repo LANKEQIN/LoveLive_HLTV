@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { getPlayerById, getGroupById, getDisplayName } from '../data/seiyuu'
+import CareerTimeline from '../components/CareerTimeline'
 import { useI18n } from '../i18n'
 import {
   getRoleEn,
@@ -169,6 +170,11 @@ function PlayerDetail() {
           <StatCard label={t('playerDetail.statLabels.events')} value={player.stats.eventCount} />
           <StatCard label={t('playerDetail.statLabels.fans')} value={formatNumber(player.stats.fanclubMembers)} />
         </div>
+      </div>
+
+      {/* 生涯时间线（声优视角 + 角色视角，Phase 5.4） */}
+      <div className="mb-6">
+        <CareerTimeline player={player} />
       </div>
 
       {/* 描述 */}

@@ -18,6 +18,8 @@ export { songs } from './songs'
 export { discs } from './discs'
 export { relationships } from './relationships'
 export { events } from './events'
+export { ANIME_DEBUTS, GRADUATIONS } from './timeline'
+export { HISTORY_MILESTONES } from './history'
 
 import { players } from './players'
 import { groups } from './groups'
@@ -26,6 +28,7 @@ import { songs } from './songs'
 import { discs } from './discs'
 import { relationships } from './relationships'
 import { events } from './events'
+import { ANIME_DEBUTS, GRADUATIONS } from './timeline'
 
 // 辅助函数：从完整罗马音名字中拆分出姓和名
 // 例如 "Emi Nitta" -> { firstName: 'Emi', lastName: 'Nitta' }
@@ -199,4 +202,192 @@ export function getLivesByEvent(event) {
     .map(id => lives.find(l => l.id === id))
     .filter(Boolean)
     .sort((a, b) => a.date.localeCompare(b.date))
+}
+
+// ==================== 选手生涯时间线（Phase 5.4） ====================
+//
+// 节点统一结构（结构化字段，由组件负责渲染文案）：
+//   {
+//     type:      'debut' | 'join' | 'solo' | 'event' | 'firstLive' |   // 声优视角
+//                'reveal' | 'anime' | 'center' | 'graduation',          // 角色视角
+//     date:      'YYYY' | 'YYYY-MM' | 'YYYY-MM-DD'（与 precision 对应）
+//     precision: 'year' | 'month' | 'day'
+//     link:      内链（可选，指向歌曲/Live/活动详情页）
+//     group / character / song / disc / live / event / milestone: 按类型携带的载荷
+//   }
+
+// 内部辅助：时间线节点按日期升序（字符串比较对 YYYY / YYYY-MM / YYYY-MM-DD 均成立）
+function byTimelineDateAsc(a, b) {
+  return (a.date || '').localeCompare(b.date || '')
+}
+
+// 内部辅助：获取角色参与演唱且带发行日期的歌曲（按发行日期升序）
+function getReleasedSongsByPerformer(characterName) {
+  return songs
+    .filter(s => s.releaseDate && Array.isArray(s.performers) && s.performers.includes(characterName))
+    .sort((a, b) => s0(a).localeCompare(s0(b)))
+}
+function s0(song) {
+  return song.releaseDate || ''
+}
+
+/**
+ * 获取选手生涯时间线（声优视角 + 角色视角）
+ *
+ * 声优视角：声优出道 → 加入企划（首次 CD 参与）→ Solo 曲发行 → 重大活动 → 初次 Live 出演
+ * 角色视角：角色 CD 初披露 → 动画登场 → Center 担当曲 → 毕业/活动休止
+ *
+ * @param {object} player players.js 中的选手对象
+ * @returns {{ seiyuu: Array, character: Array }} 两组按日期升序的节点
+ */
+export function getCareerTimeline(player) {
+  if (!player) return { seiyuu: [], character: [] }
+
+  const group = getGroupById(player.groupId)
+  const charName = player.characterName
+  const releasedSongs = getReleasedSongsByPerformer(charName)
+  const firstSong = releasedSongs[0] || null
+
+  const seiyuu = []
+  const character = []
+
+  // ===== 声优视角 =====
+
+  // 1. 声优出道（数据仅有年份，用 year 精度）
+  if (player.debutYear) {
+    seiyuu.push({
+      type: 'debut',
+      date: String(player.debutYear),
+      precision: 'year',
+    })
+  }
+
+  // 2. 加入企划：以角色名义首次参与 CD（精确到发行日）；
+  //    无可考唱片数据时退回企划结成年（year 精度）
+  if (firstSong) {
+    seiyuu.push({
+      type: 'join',
+      date: firstSong.releaseDate,
+      precision: 'day',
+      group,
+      character: charName,
+      song: firstSong,
+      link: `/songs/${firstSong.id}`,
+    })
+  } else if (group) {
+    seiyuu.push({
+      type: 'join',
+      date: String(group.established),
+      precision: 'year',
+      group,
+    })
+  }
+
+  // 3. Solo 曲发行（角色名义 solo，含所属唱片）
+  songs
+    .filter(s =>
+      s.type === 'solo' &&
+      s.releaseDate &&
+      ((Array.isArray(s.center) && s.center.includes(charName)) ||
+        (Array.isArray(s.performers) && s.performers.includes(charName)))
+    )
+    .sort((a, b) => s0(a).localeCompare(s0(b)))
+    .forEach(s => {
+      seiyuu.push({
+        type: 'solo',
+        date: s.releaseDate,
+        precision: 'day',
+        song: s,
+        disc: s.singleId ? getDiscById(s.singleId) : null,
+        link: `/songs/${s.id}`,
+      })
+    })
+
+  // 4. 重大活动：本企划参与的合同祭典 / 周年纪念 / 外部音乐节 / 电视舞台
+  events
+    .filter(e => e.groupIds.includes(player.groupId))
+    .forEach(e => {
+      seiyuu.push({
+        type: 'event',
+        date: e.date,
+        precision: 'day',
+        event: e,
+        link: `/events/${e.id}`,
+      })
+    })
+
+  // 5. 初次 Live 出演（该声优实际出演的最早场次）
+  const myLives = lives
+    .filter(l => getLivePerformers(l).some(p => p.id === player.id))
+    .sort((a, b) => a.date.localeCompare(b.date))
+  if (myLives[0]) {
+    seiyuu.push({
+      type: 'firstLive',
+      date: myLives[0].date,
+      precision: 'day',
+      live: myLives[0],
+      link: `/matches/${myLives[0].id}`,
+    })
+  }
+
+  // ===== 角色视角 =====
+
+  // 1. 角色 CD 初披露（首次参与唱片）
+  if (firstSong) {
+    character.push({
+      type: 'reveal',
+      date: firstSong.releaseDate,
+      precision: 'day',
+      character: charName,
+      song: firstSong,
+      link: `/songs/${firstSong.id}`,
+    })
+  }
+
+  // 2. 动画登场（timeline.js 静态映射，追加成员按角色覆盖）
+  const animeBase = ANIME_DEBUTS[player.groupId]
+  if (animeBase) {
+    const milestone = (animeBase.overrides && animeBase.overrides[charName]) || animeBase
+    character.push({
+      type: 'anime',
+      date: milestone.date,
+      precision: milestone.precision,
+      milestone,
+    })
+  }
+
+  // 3. Center 担当曲（组合名义歌曲，不含 solo）
+  songs
+    .filter(s =>
+      s.type !== 'solo' &&
+      s.releaseDate &&
+      Array.isArray(s.center) && s.center.includes(charName)
+    )
+    .sort((a, b) => s0(a).localeCompare(s0(b)))
+    .forEach(s => {
+      character.push({
+        type: 'center',
+        date: s.releaseDate,
+        precision: 'day',
+        song: s,
+        disc: s.singleId ? getDiscById(s.singleId) : null,
+        link: `/songs/${s.id}`,
+      })
+    })
+
+  // 4. 毕业 / 活动休止节点（timeline.js 静态维护）
+  const graduation = GRADUATIONS.find(g => g.characterName === charName)
+  if (graduation) {
+    character.push({
+      type: 'graduation',
+      date: graduation.date,
+      precision: graduation.precision,
+      milestone: graduation,
+    })
+  }
+
+  return {
+    seiyuu: seiyuu.sort(byTimelineDateAsc),
+    character: character.sort(byTimelineDateAsc),
+  }
 }

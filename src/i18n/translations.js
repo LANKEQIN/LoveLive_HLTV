@@ -13,6 +13,7 @@ export const translations = {
       teams: 'Teams',
       matches: 'Matches',
       events: 'Events',
+      history: 'History',
       songs: 'Songs',
       discs: 'Discs',
       rankings: 'Rankings',
@@ -43,6 +44,7 @@ export const translations = {
       title: 'LoveLive! HLTV',
       subtitle: '以 HLTV 风格展示 LoveLive! 声优与角色数据的非官方粉丝平台。名字格式: 声优的名 "角色名" 声优的姓 — 三次元声优信息优先展示。',
       browsePlayers: 'Browse Players →',
+      browseHistory: '企划大事记 →',
       groups: 'Groups',
       members: 'Members',
       lives: 'Lives',
@@ -107,6 +109,45 @@ export const translations = {
       about: 'About',
       years: 'years',
       heightUnit: 'cm',
+      // 生涯时间线（Phase 5.4）
+      timeline: {
+        title: '生涯时间线',
+        tabs: {
+          seiyuu: '声优视角',
+          character: '角色视角',
+        },
+        sortAsc: '旧 → 新',
+        sortDesc: '新 → 旧',
+        empty: '暂无时间线数据',
+        yearCount: '{{count}} 个节点',
+        // 节点类型徽章
+        types: {
+          debut: '出道',
+          join: '加入企划',
+          solo: 'Solo 曲',
+          event: '重大活动',
+          firstLive: '初次 Live',
+          reveal: '角色初披露',
+          anime: '动画登场',
+          center: 'Center 曲',
+          graduation: '毕业',
+        },
+        // 节点标题/说明模板
+        nodes: {
+          debut: '声优出道',
+          join: '加入 {{group}}',
+          joinDesc: '以「{{character}}」名义首次参与 CD「{{song}}」',
+          joinFallback: '企划结成初期成员',
+          solo: 'Solo 曲「{{song}}」发行',
+          inDisc: '所属唱片「{{disc}}」',
+          firstLive: '初次 Live 出演「{{live}}」',
+          reveal: '角色「{{character}}」初次 CD 披露',
+          firstCd: '收录于「{{song}}」',
+          anime: '动画登场',
+          center: '担任 Center「{{song}}」',
+          graduation: '毕业 / 活动休止',
+        },
+      },
     },
     // 组合页
     teams: {
@@ -307,6 +348,37 @@ export const translations = {
       prevEvent: '← 上一场',
       nextEvent: '下一场 →',
     },
+    // 企划大事记页
+    history: {
+      title: '大事记',
+      milestoneCount: '{{count}} 个里程碑',
+      allGroups: '全部企划',
+      allTypes: '全部类型',
+      types: {
+        launch: '企划始动',
+        release: 'CD 出道',
+        anime: '动画化',
+        member: '成员变动',
+        live: '重大公演',
+        event: '系列祭典',
+        graduation: '毕业/休止',
+      },
+      sort: {
+        asc: '由旧到新',
+        desc: '由新到旧',
+      },
+      table: {
+        date: '日期',
+        milestone: '里程碑',
+        groups: '相关企划',
+        type: '类型',
+        related: '关联',
+      },
+      yearCount: '{{count}} 项',
+      relatedLive: 'Live 详情',
+      relatedEvent: '活动详情',
+      noResults: '暂无符合条件的里程碑',
+    },
     // 唱片列表页（单曲/专辑时间线）
     discs: {
       title: 'Discs',
@@ -448,6 +520,7 @@ export const translations = {
       teams: 'Teams',
       matches: 'Matches',
       events: 'Events',
+      history: 'History',
       songs: 'Songs',
       discs: 'Discs',
       rankings: 'Rankings',
@@ -478,6 +551,7 @@ export const translations = {
       title: 'LoveLive! HLTV',
       subtitle: 'An unofficial fan data platform showcasing LoveLive! seiyuu and character data in HLTV style. Name format: first name "character" last name — real-life seiyuu info takes priority.',
       browsePlayers: 'Browse Players →',
+      browseHistory: 'Series History →',
       groups: 'Groups',
       members: 'Members',
       lives: 'Lives',
@@ -542,6 +616,45 @@ export const translations = {
       about: 'About',
       years: 'years',
       heightUnit: 'cm',
+      // Career timeline (Phase 5.4)
+      timeline: {
+        title: 'Career Timeline',
+        tabs: {
+          seiyuu: 'Seiyuu View',
+          character: 'Character View',
+        },
+        sortAsc: 'Oldest first',
+        sortDesc: 'Newest first',
+        empty: 'No timeline data yet',
+        yearCount: '{{count}} events',
+        // Node type badges
+        types: {
+          debut: 'Debut',
+          join: 'Joined Project',
+          solo: 'Solo Song',
+          event: 'Major Event',
+          firstLive: 'First Live',
+          reveal: 'First CD Reveal',
+          anime: 'Anime Debut',
+          center: 'Center Song',
+          graduation: 'Graduation',
+        },
+        // Node title/description templates
+        nodes: {
+          debut: 'Seiyuu debut',
+          join: 'Joined {{group}}',
+          joinDesc: 'First CD appearance as "{{character}}" on "{{song}}"',
+          joinFallback: 'Founding member of the project',
+          solo: 'Solo song "{{song}}" released',
+          inDisc: 'From "{{disc}}"',
+          firstLive: 'First live performance "{{live}}"',
+          reveal: 'Character "{{character}}" first revealed on CD',
+          firstCd: 'Featured on "{{song}}"',
+          anime: 'Anime debut',
+          center: 'Center of "{{song}}"',
+          graduation: 'Graduation / hiatus',
+        },
+      },
     },
     // Teams page
     teams: {
@@ -741,6 +854,37 @@ export const translations = {
       noRelatedLives: 'External appearance — no related live records yet',
       prevEvent: '← Previous',
       nextEvent: 'Next →',
+    },
+    // Project history page (series milestones timeline)
+    history: {
+      title: 'History',
+      milestoneCount: '{{count}} milestones',
+      allGroups: 'All Groups',
+      allTypes: 'All Types',
+      types: {
+        launch: 'Project Launch',
+        release: 'CD Debut',
+        anime: 'Anime',
+        member: 'Member Change',
+        live: 'Major Live',
+        event: 'Series Event',
+        graduation: 'Graduation',
+      },
+      sort: {
+        asc: 'Oldest First',
+        desc: 'Newest First',
+      },
+      table: {
+        date: 'Date',
+        milestone: 'Milestone',
+        groups: 'Groups',
+        type: 'Type',
+        related: 'Related',
+      },
+      yearCount: '{{count}} milestones',
+      relatedLive: 'Live',
+      relatedEvent: 'Event',
+      noResults: 'No milestones found',
     },
     // Discs list page (singles/albums timeline)
     discs: {

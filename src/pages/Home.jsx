@@ -32,6 +32,13 @@ function Home() {
           >
             {t('home.browsePlayers')}
           </Link>
+          {/* 企划大事记入口（Phase 5.5） */}
+          <Link
+            to="/history"
+            className="px-4 py-2 bg-hltv-bg-secondary border border-hltv-border text-hltv-text rounded text-sm font-medium hover:bg-hltv-bg-hover transition-colors"
+          >
+            {t('home.browseHistory')}
+          </Link>
         </div>
       </div>
 
