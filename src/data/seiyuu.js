@@ -17,6 +17,7 @@ export { lives } from './lives'
 export { songs } from './songs'
 export { discs } from './discs'
 export { relationships } from './relationships'
+export { events } from './events'
 
 import { players } from './players'
 import { groups } from './groups'
@@ -24,6 +25,7 @@ import { lives } from './lives'
 import { songs } from './songs'
 import { discs } from './discs'
 import { relationships } from './relationships'
+import { events } from './events'
 
 // 辅助函数：从完整罗马音名字中拆分出姓和名
 // 例如 "Emi Nitta" -> { firstName: 'Emi', lastName: 'Nitta' }
@@ -121,6 +123,19 @@ export function getSongsByDisc(discId) {
   return disc.tracks.map(trackId => getSongById(trackId)).filter(Boolean)
 }
 
+// 辅助函数：获取歌单中包含指定歌曲的所有 Live（按日期升序）
+// 用于歌曲详情页的"首次披露 Live"与演出次数统计
+export function getLivesBySong(songId) {
+  return lives
+    .filter(l => (l.setlist || []).some(e => e && e.songId === songId))
+    .sort((a, b) => a.date.localeCompare(b.date))
+}
+
+// 辅助函数：获取歌曲的首次披露 Live（歌单中最早包含该曲的场次）
+export function getSongFirstLive(songId) {
+  return getLivesBySong(songId)[0] || null
+}
+
 // 辅助函数：解析 Live 歌单条目为可显示对象
 // 条目格式：{ songId } 关联歌曲对象；{ title, titleEn } 纯文本；兼容旧的纯字符串格式
 // 返回 { song, title, titleEn }（song 为 null 表示未关联歌曲库）
@@ -163,4 +178,25 @@ export function getLiveMemberStatus(live) {
   return live.memberStatus
     .map(s => ({ ...s, player: getPlayerById(s.playerId) }))
     .filter(s => s.player)
+}
+
+// 辅助函数：根据 id 获取大型活动
+export function getEventById(id) {
+  return events.find(e => e.id === id)
+}
+
+// 辅助函数：获取指定企划参与的大型活动（按日期新到旧）
+export function getEventsByGroup(groupId) {
+  return events
+    .filter(e => e.groupIds.includes(groupId))
+    .sort((a, b) => b.date.localeCompare(a.date))
+}
+
+// 辅助函数：获取活动关联的 Live 对象列表（按日期升序）
+export function getLivesByEvent(event) {
+  if (!event || !event.liveIds) return []
+  return event.liveIds
+    .map(id => lives.find(l => l.id === id))
+    .filter(Boolean)
+    .sort((a, b) => a.date.localeCompare(b.date))
 }

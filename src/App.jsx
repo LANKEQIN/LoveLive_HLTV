@@ -7,6 +7,12 @@ import Teams from './pages/Teams'
 import TeamDetail from './pages/TeamDetail'
 import Matches from './pages/Matches'
 import MatchDetail from './pages/MatchDetail'
+import Songs from './pages/Songs'
+import SongDetail from './pages/SongDetail'
+import Discs from './pages/Discs'
+import DiscDetail from './pages/DiscDetail'
+import Events from './pages/Events'
+import EventDetail from './pages/EventDetail'
 import Rankings from './pages/Rankings'
 import Stats from './pages/Stats'
 import Search from './pages/Search'
@@ -34,6 +40,18 @@ function App() {
         <Route path="/matches" element={<Matches />} />
         {/* Live 详情页 */}
         <Route path="/matches/:id" element={<MatchDetail />} />
+        {/* 大型活动列表页 */}
+        <Route path="/events" element={<Events />} />
+        {/* 大型活动详情页 */}
+        <Route path="/events/:id" element={<EventDetail />} />
+        {/* 歌曲列表页 */}
+        <Route path="/songs" element={<Songs />} />
+        {/* 歌曲详情页 */}
+        <Route path="/songs/:id" element={<SongDetail />} />
+        {/* 唱片列表页（单曲/专辑时间线） */}
+        <Route path="/discs" element={<Discs />} />
+        {/* 唱片详情页 */}
+        <Route path="/discs/:id" element={<DiscDetail />} />
         {/* 排行榜页 */}
         <Route path="/rankings" element={<Rankings />} />
         {/* 统计页 */}

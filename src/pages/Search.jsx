@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { players, groups, lives, songs, getGroupById, getDisplayName } from '../data/seiyuu'
+import { players, groups, lives, songs, discs, getGroupById, getDisplayName } from '../data/seiyuu'
 import { useI18n } from '../i18n'
 
 /**
  * 全局搜索页
- * 支持搜索声优/角色、组合、Live、歌曲，结果按分类展示
+ * 支持搜索声优/角色、组合、Live、歌曲、唱片，结果按分类展示
  */
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -29,7 +29,7 @@ function Search() {
 
   // 搜索结果
   const results = useMemo(() => {
-    if (!query) return { players: [], groups: [], lives: [], songs: [] }
+    if (!query) return { players: [], groups: [], lives: [], songs: [], discs: [] }
     const lowerQuery = query.toLowerCase()
 
     const matchedPlayers = players.filter(p => {
@@ -62,16 +62,24 @@ function Search() {
       return texts.some(text => text.includes(lowerQuery))
     })
 
+    // 唱片：匹配唱片名 / 罗马音 / 编号说明
+    const matchedDiscs = discs.filter(d => {
+      const texts = [d.title, d.titleEn, d.number].filter(Boolean).map(s => s.toLowerCase())
+      return texts.some(text => text.includes(lowerQuery))
+    })
+
     return {
       players: matchedPlayers,
       groups: matchedGroups,
       lives: matchedLives,
       songs: matchedSongs,
+      discs: matchedDiscs,
     }
   }, [query])
 
   const hasResults = results.players.length > 0 || results.groups.length > 0 ||
-                     results.lives.length > 0 || results.songs.length > 0
+                     results.lives.length > 0 || results.songs.length > 0 ||
+                     results.discs.length > 0
 
   return (
     <div className="p-4">
@@ -171,7 +179,12 @@ function Search() {
                           return (
                             <tr key={song.id} className="hltv-row border-t border-hltv-border">
                               <td className="px-3 py-2 text-hltv-text-bright font-medium">
-                                {lang === 'en' ? song.titleEn : song.title}
+                                <Link
+                                  to={`/songs/${song.id}`}
+                                  className="text-hltv-link hover:text-hltv-link-hover"
+                                >
+                                  {lang === 'en' ? song.titleEn : song.title}
+                                </Link>
                               </td>
                               <td className="px-3 py-2">
                                 <span
@@ -183,6 +196,51 @@ function Search() {
                               </td>
                               <td className="px-3 py-2 text-hltv-text-dim text-xs text-right">
                                 {formatNumber(song.streams)} streams
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </ResultSection>
+              )}
+              {/* 唱片 */}
+              {results.discs.length > 0 && (
+                <ResultSection title={t('search.categories.discs')} count={results.discs.length}>
+                  <div className="bg-hltv-bg-secondary border border-hltv-border rounded overflow-hidden">
+                    <table className="w-full text-sm">
+                      <tbody>
+                        {results.discs.map(disc => {
+                          const group = getGroupById(disc.groupId)
+                          return (
+                            <tr key={disc.id} className="hltv-row border-t border-hltv-border">
+                              {/* 封面色块 + 唱片名 */}
+                              <td className="px-3 py-2">
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="w-4 h-4 rounded shrink-0"
+                                    style={{ background: `linear-gradient(135deg, ${disc.color}, ${disc.color}88)` }}
+                                  />
+                                  <Link
+                                    to={`/discs/${disc.id}`}
+                                    className="text-hltv-link hover:text-hltv-link-hover font-medium"
+                                  >
+                                    {lang === 'en' ? disc.titleEn : disc.title}
+                                  </Link>
+                                  <span className="text-hltv-text-dim text-xs">{disc.number}</span>
+                                </div>
+                              </td>
+                              <td className="px-3 py-2">
+                                <span
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs"
+                                  style={{ backgroundColor: `${group.color}22`, color: group.color }}
+                                >
+                                  {group.name}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2 text-hltv-text-dim text-xs text-right">
+                                {disc.releaseDate}
                               </td>
                             </tr>
                           )

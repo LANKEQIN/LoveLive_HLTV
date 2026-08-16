@@ -90,6 +90,8 @@ src/
     TeamDetail.jsx     → 组合详情页（成员 / 关系图 / 战绩）
     Matches.jsx        → Live 赛程列表页
     MatchDetail.jsx    → Live 详情页（歌单 / 出演成员 / 场馆）
+    Songs.jsx          → 歌曲列表页（企划/类型筛选 + 排序）
+    SongDetail.jsx     → 歌曲详情页（演唱阵容 / Center / 首次披露 Live / 成绩）
     Rankings.jsx       → 排行榜页（人气 / CD销量 / 流媒体 / 综合战力）
     Stats.jsx          → 统计页面（仪表盘 + 图表 + 交叉分析）
     Search.jsx         → 全局搜索页（声优/角色/组合/Live/歌曲）
@@ -181,12 +183,29 @@ src/
   - 补充虹咲 27 首、莲之空 15 首 solo 曲（动画插入歌、专辑 solo、R3BIRTH、毕业专辑新录、Link! Like! 翻唱）
   - 数据经官方 CD 页 / Oricon / llwiki 多源交叉验证（累计 239 首歌曲）
 
-### 待完成（Phase 4 剩余 + Phase 5-8）
+### 已完成 (Phase 4.2 ~ 4.4 · 数据深化)
+
+- [x] **官方小队数据** — Printemps/BiBi/lily white、CYaRon!/AZALEA/Guilty Kiss 等全企划官方小队录入（`officialUnit` 类型），年级组保留 `subunit` 并列展示，TeamDetail 关系图支持按类型筛选
+- [x] **Live 数据增强** — setlist 关联歌曲 ID、出演/缺席明细（`performers` / `memberStatus`，含休止、交棒等记录）、补录 LoveLive! Fest / ユニット甲子園 / 东京巨蛋等重要场次
+- [x] **关系数据扩充** — 跨企划"憧憬"（`admiration`）、跨企划组合（`crossUnit`）、同事务所（`sameAgency`）；莲之空 104/105 期成员与世代标记；声优数据勘误（μ's/Aqours 11 处声优映射错位修正）
+
+### 已完成 (Phase 5.1)
+
+- [x] **歌曲列表页** (`/songs`)
+  - 企划筛选（标签切换）+ 类型筛选（单曲主打/耦合曲/专辑曲/Solo 曲/其他）
+  - 按发行日期 / 播放量 / 销量排序，支持升序/降序切换
+- [x] **歌曲详情页** (`/songs/:id`)
+  - 基本信息：发行日期 / 作词 / 作曲 / Center / 所属唱片（封面色块 + 编号）
+  - 演唱阵容链接到选手页（HLTV 命名格式，Center 带 C 徽章）
+  - 首次披露 Live（链接到 Live 详情页）+ 累计 Live 演出次数
+  - 成绩数据：播放量 / 销量及全站排名；同唱片收录曲互链
+- [x] Header 导航新增 Songs 入口；全局搜索歌曲结果可点击进入详情
+
+### 待完成（Phase 5 剩余 + Phase 6-8）
 
 详细计划见 [docs/开发计划.md](docs/开发计划.md)，概要：
 
-- **Phase 4 剩余 · 数据深化** — 官方小队录入（Printemps/BiBi/lily white 等）、Live setlist 关联、跨企划关系、莲之空 104/105 期成员补录
-- **Phase 5 · 新功能页面** — 歌曲列表/详情页、单曲页、大型活动页、选手生涯时间线、企划大事记
+- **Phase 5 剩余 · 新功能页面** — 单曲/专辑页（`/discs`）、大型活动页、选手生涯时间线、企划大事记
 - **Phase 6 · HLTV 风格深化** — 首页动态流、"转会"（加入/毕业）系统、选手成就、生涯曲线
 - **Phase 7 · 工程化与部署** — Vitest 测试、代码分割、GitHub Actions CI、部署上线
 - **Phase 8 · 轻量后端（可选）** — 数据 API 化（dataProvider 抽象 + JSON 导出），不做用户系统

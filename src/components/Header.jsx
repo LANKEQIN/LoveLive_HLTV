@@ -20,6 +20,9 @@ function Header() {
     { path: '/players', label: t('nav.players') },
     { path: '/teams', label: t('nav.teams') },
     { path: '/matches', label: t('nav.matches') },
+    { path: '/events', label: t('nav.events') },
+    { path: '/songs', label: t('nav.songs') },
+    { path: '/discs', label: t('nav.discs') },
     { path: '/rankings', label: t('nav.rankings') },
     { path: '/stats', label: t('nav.stats') },
   ]
