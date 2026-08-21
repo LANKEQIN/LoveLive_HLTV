@@ -1,5 +1,9 @@
 import { useParams, Link } from 'react-router-dom'
 import { getPlayerById, getGroupById, getDisplayName } from '../data/seiyuu'
+import CareerTimeline from '../components/CareerTimeline'
+import TransferHistory from '../components/TransferHistory'
+import PlayerTrophies from '../components/PlayerTrophies'
+import CareerChart from '../components/CareerChart'
 import { useI18n } from '../i18n'
 import {
   getRoleEn,
@@ -8,6 +12,7 @@ import {
   getGradeEn,
   getColorNameEn,
 } from '../i18n/dataTranslations'
+import { calculateRating, getRatingColor } from '../utils/rating'
 
 /**
  * 选手/声优详情页
@@ -171,6 +176,26 @@ function PlayerDetail() {
         </div>
       </div>
 
+      {/* 奖杯陈列区（HLTV Trophies 映射，Phase 6.3；无成就时组件自身不渲染） */}
+      <div className="mb-6">
+        <PlayerTrophies player={player} />
+      </div>
+
+      {/* 生涯数据曲线（历年活动量/年度评分趋势，Phase 6.4；不足两年数据时组件自身不渲染） */}
+      <div className="mb-6">
+        <CareerChart player={player} />
+      </div>
+
+      {/* 生涯时间线（声优视角 + 角色视角，Phase 5.4） */}
+      <div className="mb-6">
+        <CareerTimeline player={player} />
+      </div>
+
+      {/* 生涯变动卡片（HLTV 转会历史映射，Phase 6.2；无记录时组件自身不渲染） */}
+      <div className="mb-6">
+        <TransferHistory player={player} />
+      </div>
+
       {/* 描述 */}
       <div className="bg-hltv-bg-secondary border border-hltv-border rounded p-4">
         <h2 className="text-hltv-text-dim text-sm font-bold uppercase tracking-wider mb-2">
@@ -246,29 +271,6 @@ function calcAge(birthdate) {
   return age
 }
 
-/**
- * 计算综合评分
- */
-function calculateRating(player) {
-  const { liveCount, songCount, soloCount, cdCount, eventCount, fanclubMembers } = player.stats
-  const score =
-    liveCount * 0.05 +
-    songCount * 0.02 +
-    soloCount * 0.03 +
-    cdCount * 0.01 +
-    eventCount * 0.005 +
-    (fanclubMembers / 10000) * 0.01
-  return Math.min(score, 1.50)
-}
-
-/**
- * 根据评分获取颜色
- */
-function getRatingColor(rating) {
-  if (rating >= 1.20) return '#5fb048'
-  if (rating >= 1.05) return '#d4a017'
-  if (rating >= 0.90) return '#cad0d6'
-  return '#e05555'
-}
+// 综合评分计算与颜色编码见 src/utils/rating.js（共享模块）
 
 export default PlayerDetail

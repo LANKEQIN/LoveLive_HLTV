@@ -37,7 +37,7 @@ const NIJI_PLAYERS_10 = [...NIJI_PLAYERS_9, 'koizumi-moeka']
 // 虹ヶ咲 12 人（ミア・嵐珠加入后）
 const NIJI_PLAYERS_12 = [...NIJI_PLAYERS_10, 'uchida-shu', 'homoto-akina']
 // Liella! 1 期生 5 人
-const LIELLA_PLAYERS_5 = ['date-sayuri', 'liyuu', 'misaki-nako', 'aoyama-nagisa', 'suzuhara-nozomi-ren']
+const LIELLA_PLAYERS_5 = ['date-sayuri', 'liyuu', 'misaki-nako', 'payton-naomi', 'aoyama-nagisa']
 // Liella! 2 期生加入后 9 人
 const LIELLA_PLAYERS_9 = [...LIELLA_PLAYERS_5, 'suzuhara-nozomi-kinako', 'yabushima-akane', 'okuma-wakana', 'emori-aya']
 // Liella! 3 期生加入后 11 人
@@ -640,6 +640,20 @@ export const lives = [
     // 16 官方小队合同出演：Aqours 系（CYaRon!/AZALEA/Guilty Kiss/わいわいわい）、
     // Saint Snow、虹咲系（A・ZU・NA/QU4RTZ/DiverDiva/R3BIRTH）、
     // Liella! 系（CatChu!/KALEIDOSCORE/5yncri5e!）、Sunny Passion、蓮ノ空系（スリーズブーケ/DOLLCHESTRA/みらくらぱーく！）
+    // 显式指定阵容：蓮ノ空仅 103 期 6 人出演（104 期 2024-04-13 才加入，不能按 groupIds 全员推导）；
+    // 缺席/交棒成员通过下方 memberStatus 记录并由 getLivePerformers 剔除
+    performers: [
+      ...AQOURS_PLAYERS,
+      // Saint Snow（理亜役条目沿用 suzuki-aina-leah 既有数据口径）
+      'tano-asami', 'suzuki-aina-leah',
+      ...NIJI_PLAYERS_12,
+      ...LIELLA_PLAYERS_11,
+      // Sunny Passion
+      'watanabe-haruka', 'yoshitake-chihaya',
+      // 蓮ノ空 103 期 6 人（スリーズブーケ / DOLLCHESTRA / みらくらぱーく！）
+      'nirei-nozomi', 'nonaka-kokona', 'suga-kanau',
+      'hanamiya-niina', 'sasaki-kotoko', 'tsukine-kona',
+    ],
     setlist: [
       { title: '近未来ハッピーエンド', titleEn: 'Kinmirai Happy End' }, // CYaRon!
       { title: 'GALAXY HidE and SeeK', titleEn: 'GALAXY HidE and SeeK' }, // AZALEA
@@ -676,6 +690,13 @@ export const lives = [
         attendance: 'partial',
         note: '仅出演 Day.1（3/9）',
         noteEn: 'Day 1 only (Mar 9)',
+      },
+      {
+        // せつ菜役已于 2023 年 3 月末交棒林鼓子（与 nijigasaki-4th-live 同一口径），本公演 A・ZU・NA 由林鼓子出演
+        playerId: 'kusunoki-tomori',
+        attendance: 'absent',
+        note: 'せつ菜役已于 2023 年 3 月末交棒林鼓子，本公演由林鼓子出演',
+        noteEn: 'Setsuna role handed over to Kokona Hayashi since Mar 2023; performed by Hayashi',
       },
     ],
   },

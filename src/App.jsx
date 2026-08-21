@@ -13,6 +13,7 @@ import Discs from './pages/Discs'
 import DiscDetail from './pages/DiscDetail'
 import Events from './pages/Events'
 import EventDetail from './pages/EventDetail'
+import History from './pages/History'
 import Rankings from './pages/Rankings'
 import Stats from './pages/Stats'
 import Search from './pages/Search'
@@ -44,6 +45,8 @@ function App() {
         <Route path="/events" element={<Events />} />
         {/* 大型活动详情页 */}
         <Route path="/events/:id" element={<EventDetail />} />
+        {/* 企划大事记页 */}
+        <Route path="/history" element={<History />} />
         {/* 歌曲列表页 */}
         <Route path="/songs" element={<Songs />} />
         {/* 歌曲详情页 */}
