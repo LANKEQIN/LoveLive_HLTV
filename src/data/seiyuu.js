@@ -20,6 +20,7 @@ export { relationships } from './relationships'
 export { events } from './events'
 export { ANIME_DEBUTS, GRADUATIONS } from './timeline'
 export { HISTORY_MILESTONES } from './history'
+export { TRANSFERS } from './transfers'
 
 import { players } from './players'
 import { groups } from './groups'
@@ -29,6 +30,8 @@ import { discs } from './discs'
 import { relationships } from './relationships'
 import { events } from './events'
 import { ANIME_DEBUTS, GRADUATIONS } from './timeline'
+import { HISTORY_MILESTONES } from './history'
+import { TRANSFERS } from './transfers'
 
 // 辅助函数：从完整罗马音名字中拆分出姓和名
 // 例如 "Emi Nitta" -> { firstName: 'Emi', lastName: 'Nitta' }
@@ -202,6 +205,83 @@ export function getLivesByEvent(event) {
     .map(id => lives.find(l => l.id === id))
     .filter(Boolean)
     .sort((a, b) => a.date.localeCompare(b.date))
+}
+
+// ==================== 首页动态流（Phase 6.1） ====================
+//
+// 新闻条目统一结构：
+//   {
+//     id:       数据源中的 ID（拼 React key 用）
+//     type:     'release' 唱片发行 | 'live' Live 举办 | 'member' 成员加入/体制变更 | 'graduation' 毕业
+//     discType: 唱片细分类型（仅 release，single/album/mini-album/digital，用于徽章文案）
+//     date:     日期字符串（不同数据源精度不同：YYYY-MM-DD / YYYY-MM）
+//     groupId / groupIds: 归属企划（用于企划标签展示）
+//     title / titleEn: 标题中英文
+//     link:     内链（唱片详情 / Live 详情 / 大事记）
+//   }
+
+/**
+ * 获取首页「最新动态」新闻流（数据层面的动态，按日期新 → 旧）
+ * 来源三类：discs（新唱片发行）、lives（Live 举办）、
+ * 大事记 member/graduation 里程碑（成员加入 / 毕业）
+ * @param {number} limit 返回条数上限
+ */
+export function getNewsFeed(limit = 15) {
+  const items = []
+
+  // 1. 新唱片发行（单曲/专辑/数字单曲）
+  discs.forEach(disc => {
+    if (!disc.releaseDate) return
+    items.push({
+      id: disc.id,
+      type: 'release',
+      discType: disc.type,
+      date: disc.releaseDate,
+      groupId: disc.groupId,
+      title: disc.title,
+      titleEn: disc.titleEn,
+      link: `/discs/${disc.id}`,
+    })
+  })
+
+  // 2. Live 举办
+  lives.forEach(live => {
+    items.push({
+      id: live.id,
+      type: 'live',
+      date: live.date,
+      groupIds: live.groupIds,
+      title: live.name,
+      titleEn: live.nameEn || live.name,
+      link: `/matches/${live.id}`,
+    })
+  })
+
+  // 3. 成员加入 / 毕业（复用大事记里程碑；关联 Live 时优先内链场次详情）
+  HISTORY_MILESTONES.forEach(m => {
+    if (m.type !== 'member' && m.type !== 'graduation') return
+    items.push({
+      id: m.id,
+      type: m.type,
+      date: m.date,
+      groupId: m.groupId,
+      title: m.title,
+      titleEn: m.titleEn,
+      link: m.liveId ? `/matches/${m.liveId}` : '/history',
+    })
+  })
+
+  return items.sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit)
+}
+
+/**
+ * 获取最近的 Live 结果（按日期新 → 旧，用于首页左栏"最近赛果"）
+ * @param {number} limit 返回条数上限
+ */
+export function getRecentLives(limit = 8) {
+  return [...lives]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, limit)
 }
 
 // ==================== 选手生涯时间线（Phase 5.4） ====================
@@ -390,4 +470,230 @@ export function getCareerTimeline(player) {
     seiyuu: seiyuu.sort(byTimelineDateAsc),
     character: character.sort(byTimelineDateAsc),
   }
+}
+
+// ==================== "转会"系统（Phase 6.2） ====================
+
+/**
+ * 获取选手的生涯变动记录（加入/毕业/活动休止/声优交棒，按日期新 -> 旧）
+ * 用于 PlayerDetail 页的"生涯变动"卡片（HLTV 转会历史映射）
+ * @param {string} playerId players.js 中的选手 id
+ */
+export function getTransfersByPlayer(playerId) {
+  return TRANSFERS
+    .filter(t => t.playerId === playerId)
+    .sort((a, b) => b.date.localeCompare(a.date))
+}
+
+// ==================== 选手成就系统（Phase 6.3，HLTV Trophies 映射） ====================
+//
+// 成就条目统一结构：
+//   {
+//     type:    'center' Center 担当曲 | 'solo' Solo 曲 | 'dome' 巨蛋公演 | 'koshien' 甲子園出演
+//     count:   次数（Center/Solo 为曲目数，Dome 为场次总数，Koshien 为出演届数）
+//     entries: 成就明细（可内链明细页的对象数组，dome 为按场馆分组的 venues）
+//   }
+
+// 含"ドーム"字样但并非巨蛋本体的场馆（東京ドームシティホール为约 3000 人小型 Hall）
+const NON_DOME_VENUES = ['東京ドームシティホール']
+
+// 内部辅助：判断 Live 是否为巨蛋级场馆公演
+// 判定规则：场馆名含"ドーム/Dome"且不在排除名单（覆盖東京/名古屋/メットライフ/ベルーナ等日本巨蛋）
+function isDomeLive(live) {
+  if (!live.venue) return false
+  if (NON_DOME_VENUES.includes(live.venue)) return false
+  return live.venue.includes('ドーム') || (live.venueEn || '').includes('Dome')
+}
+
+// 内部辅助：判断 Live 是否为甲子園活动（ユニット甲子園系列合同 Live）
+function isKoshienLive(live) {
+  return (live.name || '').includes('甲子園') || (live.nameEn || '').includes('Koshien')
+}
+
+/**
+ * 获取选手的 MVP 式荣誉列表（HLTV Trophies 映射，全部从 songs/lives 数据动态推导）
+ * 四类荣誉（count 为 0 的类别不返回）：
+ *   - center  组合名义歌曲中担任 Center 的曲目数（多人 Center 各自计 1 次）
+ *   - solo    角色名义 Solo 曲数量
+ *   - dome    巨蛋级场馆公演出演次数（按场馆分组明细，链接各场馆公演）
+ *   - koshien ユニット甲子園等"甲子園"系出演届数
+ * @param {object} player players.js 中的选手对象
+ * @returns {Array<{type, count, entries}>} 成就数组
+ */
+export function getPlayerTrophies(player) {
+  if (!player) return []
+  const charName = player.characterName
+  const trophies = []
+
+  // 1. Center 担当曲（组合名义，不含 solo；按发行日期升序，内链歌曲详情页）
+  const centerSongs = songs
+    .filter(s => s.type !== 'solo' && Array.isArray(s.center) && s.center.includes(charName))
+    .sort((a, b) => (a.releaseDate || '').localeCompare(b.releaseDate || ''))
+  if (centerSongs.length > 0) {
+    trophies.push({
+      type: 'center',
+      count: centerSongs.length,
+      entries: centerSongs.map(s => ({
+        id: s.id,
+        title: s.title,
+        titleEn: s.titleEn || s.title,
+        link: `/songs/${s.id}`,
+      })),
+    })
+  }
+
+  // 2. Solo 曲（角色名义 solo，与生涯时间线口径一致：center 或 performers 含该角色）
+  const soloSongs = songs
+    .filter(s =>
+      s.type === 'solo' &&
+      ((Array.isArray(s.center) && s.center.includes(charName)) ||
+        (Array.isArray(s.performers) && s.performers.includes(charName)))
+    )
+    .sort((a, b) => (a.releaseDate || '').localeCompare(b.releaseDate || ''))
+  if (soloSongs.length > 0) {
+    trophies.push({
+      type: 'solo',
+      count: soloSongs.length,
+      entries: soloSongs.map(s => ({
+        id: s.id,
+        title: s.title,
+        titleEn: s.titleEn || s.title,
+        link: `/songs/${s.id}`,
+      })),
+    })
+  }
+
+  // 3. 巨蛋公演（选手实际出演的巨蛋级场馆 Live，剔除缺席成员）
+  const domeLives = lives
+    .filter(l => isDomeLive(l) && getLivePerformers(l).some(p => p.id === player.id))
+    .sort((a, b) => a.date.localeCompare(b.date))
+  if (domeLives.length > 0) {
+    // 按场馆分组计数（每场馆链向该场馆最近一次出演的 Live 详情）
+    const venueMap = new Map()
+    domeLives.forEach(l => {
+      if (!venueMap.has(l.venue)) {
+        venueMap.set(l.venue, { venue: l.venue, venueEn: l.venueEn || l.venue, count: 0, latestLiveId: l.id })
+      }
+      const v = venueMap.get(l.venue)
+      v.count++
+      v.latestLiveId = l.id
+    })
+    trophies.push({
+      type: 'dome',
+      count: domeLives.length,
+      entries: [...venueMap.values()].map(v => ({
+        id: v.latestLiveId,
+        title: v.venue,
+        titleEn: v.venueEn,
+        count: v.count,
+        link: `/matches/${v.latestLiveId}`,
+      })),
+    })
+  }
+
+  // 4. 甲子園出演（ユニット甲子園系列，标签取活动名，内链 Live 详情页）
+  const koshienLives = lives
+    .filter(l => isKoshienLive(l) && getLivePerformers(l).some(p => p.id === player.id))
+    .sort((a, b) => a.date.localeCompare(b.date))
+  if (koshienLives.length > 0) {
+    trophies.push({
+      type: 'koshien',
+      count: koshienLives.length,
+      entries: koshienLives.map(l => ({
+        id: l.id,
+        title: l.name,
+        titleEn: l.nameEn || l.name,
+        link: `/matches/${l.id}`,
+      })),
+    })
+  }
+
+  return trophies
+}
+
+// ==================== 生涯数据曲线（Phase 6.4） ====================
+//
+// 年度活动条目结构：
+//   {
+//     year:     年份（number）
+//     lives:    当年 Live 出演场次（实际出演，剔除缺席）
+//     songs:    当年参与演唱的歌曲数（以角色名义，含 solo）
+//     solo:     其中 Solo 曲数
+//     events:   当年本企划参与的大型活动数
+//     activity: 活动量合计（lives + songs）
+//     rating:   年度评分（见下方口径说明，保留两位小数）
+//   }
+//
+// 年度评分口径：沿用站点综合评分权重按"当年增量"计算
+//   （lives×0.05 + songs×0.02 + solo×0.03 + events×0.005，上限 1.50），
+//   粉丝数/唱片数无年度数据不计入；数值低于生涯累计评分属正常（单年产出 vs 历年累计）。
+
+/**
+ * 获取选手历年活动量与年度评分（Phase 6.4，PlayerDetail 生涯数据曲线数据源）
+ * 全部从 lives/songs/events 数据动态推导，首尾年份之间的空档年补 0（保证折线连续），
+ * 首尾之外不延伸（μ's 等已休止企划不会拖到当前年份）
+ * @param {object} player players.js 中的选手对象
+ * @returns {Array<{year, lives, songs, solo, events, activity, rating}>} 按年份升序
+ */
+export function getCareerActivity(player) {
+  if (!player) return []
+  const charName = player.characterName
+  const yearMap = new Map()
+
+  // 内部辅助：取年份行（不存在则建零值行）
+  const ensureYear = dateStr => {
+    const year = (dateStr || '').slice(0, 4)
+    if (!year) return null
+    if (!yearMap.has(year)) {
+      yearMap.set(year, { lives: 0, songs: 0, solo: 0, events: 0 })
+    }
+    return yearMap.get(year)
+  }
+
+  // 1. Live 出演（选手实际出演场次，与成就/时间线同一口径）
+  lives.forEach(l => {
+    if (!getLivePerformers(l).some(p => p.id === player.id)) return
+    const row = ensureYear(l.date)
+    if (row) row.lives++
+  })
+
+  // 2. 歌曲参与（以角色名义演唱且带发行日期；solo 单独计数供评分加权）
+  songs.forEach(s => {
+    if (!s.releaseDate || !Array.isArray(s.performers) || !s.performers.includes(charName)) return
+    const row = ensureYear(s.releaseDate)
+    if (!row) return
+    row.songs++
+    if (s.type === 'solo') row.solo++
+  })
+
+  // 3. 大型活动（本企划参与的合同祭典/周年纪念/外部音乐节/电视舞台）
+  events.forEach(e => {
+    if (!e.groupIds.includes(player.groupId)) return
+    const row = ensureYear(e.date)
+    if (row) row.events++
+  })
+
+  // 无数据直接返回空（组件侧不渲染）
+  const years = [...yearMap.keys()].map(Number).sort((a, b) => a - b)
+  if (years.length === 0) return []
+
+  // 填补首尾之间的空档年，计算活动量与年度评分
+  const result = []
+  for (let y = years[0]; y <= years[years.length - 1]; y++) {
+    const row = yearMap.get(String(y)) || { lives: 0, songs: 0, solo: 0, events: 0 }
+    const rating = Math.min(
+      row.lives * 0.05 +
+      row.songs * 0.02 +
+      row.solo * 0.03 +
+      row.events * 0.005,
+      1.50
+    )
+    result.push({
+      year: y,
+      ...row,
+      activity: row.lives + row.songs,
+      rating: Number(rating.toFixed(2)),
+    })
+  }
+  return result
 }

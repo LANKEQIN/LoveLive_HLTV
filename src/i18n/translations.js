@@ -56,6 +56,24 @@ export const translations = {
       rating: 'Rating',
       rank: '#',
       moreFeatures: 'Phase 3 开发中: Stats · 扩展企划数据 · 搜索 · 选手对比',
+      // 首页动态流三栏布局（Phase 6.1）
+      feed: {
+        results: '最近赛果',
+        resultsAll: '全部赛程 →',
+        news: '最新动态',
+        newsAll: '企划大事记 →',
+        rankingsAll: '完整排行 →',
+        // 动态类型徽章（release 按唱片类型细分）
+        badge: {
+          single: '单曲发行',
+          album: '专辑发行',
+          'mini-album': '迷你专辑',
+          digital: '数字单曲',
+          live: 'Live 举办',
+          member: '成员变动',
+          graduation: '毕业',
+        },
+      },
     },
     // 选手列表页
     players: {
@@ -147,6 +165,37 @@ export const translations = {
           center: '担任 Center「{{song}}」',
           graduation: '毕业 / 活动休止',
         },
+      },
+      // 生涯变动卡片（Phase 6.2，HLTV Transfers 映射）
+      transfers: {
+        title: '生涯变动',
+        count: '{{count}} 条记录',
+        types: {
+          join: '加入',
+          graduation: '毕业',
+          hiatus: '活动休止',
+          recast: '声优交棒',
+        },
+      },
+      // 奖杯陈列区（Phase 6.3，HLTV Trophies 映射）
+      trophies: {
+        title: '荣誉陈列',
+        count: '{{count}} 项荣誉',
+        types: {
+          center: 'Center 担当曲',
+          solo: 'Solo 曲',
+          dome: '巨蛋公演出演',
+          koshien: '甲子園出演',
+        },
+      },
+      // 生涯数据曲线（Phase 6.4，历年活动量/年度评分趋势）
+      chart: {
+        title: '生涯数据曲线',
+        range: '{{from}} – {{to}}',
+        lives: 'Live 出演',
+        songs: '歌曲参与',
+        rating: '年度评分',
+        note: '* 年度评分由当年 Live / 歌曲 / Solo / 重大活动数据按站点评分权重推导（单年产出，故低于生涯累计评分）',
       },
     },
     // 组合页
@@ -563,6 +612,24 @@ export const translations = {
       rating: 'Rating',
       rank: '#',
       moreFeatures: 'Phase 3 coming soon: Stats · More Groups · Search · Player Compare',
+      // Home feed 3-column layout (Phase 6.1)
+      feed: {
+        results: 'Recent Results',
+        resultsAll: 'All Matches →',
+        news: 'Latest News',
+        newsAll: 'Series History →',
+        rankingsAll: 'Full Rankings →',
+        // News type badges (release subdivided by disc type)
+        badge: {
+          single: 'Single',
+          album: 'Album',
+          'mini-album': 'Mini Album',
+          digital: 'Digital Single',
+          live: 'Live Held',
+          member: 'Roster Move',
+          graduation: 'Graduation',
+        },
+      },
     },
     // Players list page
     players: {
@@ -654,6 +721,37 @@ export const translations = {
           center: 'Center of "{{song}}"',
           graduation: 'Graduation / hiatus',
         },
+      },
+      // Career changes card (Phase 6.2, HLTV Transfers mapping)
+      transfers: {
+        title: 'Career Changes',
+        count: '{{count}} records',
+        types: {
+          join: 'Joined',
+          graduation: 'Graduated',
+          hiatus: 'Hiatus',
+          recast: 'Recast',
+        },
+      },
+      // Trophies shelf (Phase 6.3, HLTV Trophies mapping)
+      trophies: {
+        title: 'Trophies',
+        count: '{{count}} honors',
+        types: {
+          center: 'Center Songs',
+          solo: 'Solo Songs',
+          dome: 'Dome Shows',
+          koshien: 'Koshien',
+        },
+      },
+      // Career trends chart (Phase 6.4, yearly activity / yearly rating)
+      chart: {
+        title: 'Career Trends',
+        range: '{{from}} – {{to}}',
+        lives: 'Lives',
+        songs: 'Songs',
+        rating: 'Yearly Rating',
+        note: '* Yearly rating is derived from that year\'s lives / songs / solo / major events using the site rating weights (single-year output, hence lower than the career rating)',
       },
     },
     // Teams page

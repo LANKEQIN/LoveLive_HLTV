@@ -6,6 +6,7 @@ import {
   getRoleEn,
   getColorNameEn,
 } from '../i18n/dataTranslations'
+import { calculateRating, getRatingColor } from '../utils/rating'
 
 /**
  * 选手/声优列表页
@@ -182,31 +183,6 @@ function calcAge(birthdate) {
   return age
 }
 
-/**
- * 计算综合评分（模拟 HLTV rating 2.0）
- * 根据各项统计数据加权计算
- */
-function calculateRating(player) {
-  const { liveCount, songCount, soloCount, cdCount, eventCount, fanclubMembers } = player.stats
-  // 加权计算: Live权重最高, 其次歌曲, 粉丝数等
-  const score =
-    liveCount * 0.05 +
-    songCount * 0.02 +
-    soloCount * 0.03 +
-    cdCount * 0.01 +
-    eventCount * 0.005 +
-    (fanclubMembers / 10000) * 0.01
-  return Math.min(score, 1.50) // 评分上限 1.50
-}
-
-/**
- * 根据评分获取颜色（HLTV 风格的颜色编码）
- */
-function getRatingColor(rating) {
-  if (rating >= 1.20) return '#5fb048' // 绿色 - 优秀
-  if (rating >= 1.05) return '#d4a017' // 黄色 - 良好
-  if (rating >= 0.90) return '#cad0d6' // 白色 - 普通
-  return '#e05555' // 红色 - 较低
-}
+// 综合评分计算与颜色编码见 src/utils/rating.js（共享模块）
 
 export default Players

@@ -17,6 +17,7 @@ import {
 } from 'recharts'
 import { players, getGroupById, getDisplayName } from '../data/seiyuu'
 import { useI18n } from '../i18n'
+import { calculateRating, getRatingColor } from '../utils/rating'
 
 /**
  * 选手对比页
@@ -286,30 +287,7 @@ const tooltipStyle = {
   color: '#cad0d6',
 }
 
-/**
- * 计算综合评分
- */
-function calculateRating(player) {
-  const { liveCount, songCount, soloCount, cdCount, eventCount, fanclubMembers } = player.stats
-  const score =
-    liveCount * 0.05 +
-    songCount * 0.02 +
-    soloCount * 0.03 +
-    cdCount * 0.01 +
-    eventCount * 0.005 +
-    (fanclubMembers / 10000) * 0.01
-  return Math.min(score, 1.50)
-}
-
-/**
- * 根据评分获取颜色
- */
-function getRatingColor(rating) {
-  if (rating >= 1.20) return '#5fb048'
-  if (rating >= 1.05) return '#d4a017'
-  if (rating >= 0.90) return '#cad0d6'
-  return '#e05555'
-}
+// 综合评分计算与颜色编码见 src/utils/rating.js（共享模块）
 
 /**
  * 数字格式化

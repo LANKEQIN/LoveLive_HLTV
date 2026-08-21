@@ -79,8 +79,15 @@ export const birthplaceEnMap = {
   '宮城県': 'Miyagi',
   '熊本県': 'Kumamoto',
   '鹿児島県': 'Kagoshima',
+  '長野県': 'Nagano',
+  '山梨県': 'Yamanashi',
+  '奈良県': 'Nara',
+  '千葉県': 'Chiba',
+  '宮崎県': 'Miyazaki',
+  '石川県': 'Ishikawa',
   '香港': 'Hong Kong',
   '中国': 'China',
+  '中国・上海': 'Shanghai, China',
   'オーストラリア': 'Australia',
 }
 
